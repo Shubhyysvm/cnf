@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  
+  /* CountryNatural Brand Colors */
+  --trust-green: #2E7D32;
+  --sprout-green: #A5D6A7;
+  --warm-neutral: #FAF7F2;
+  --accent-carrot: #F49F0A;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  
+  /* Custom brand colors for Tailwind */
+  --color-trust-green: var(--trust-green);
+  --color-sprout-green: var(--sprout-green);
+  --color-warm-neutral: var(--warm-neutral);
+  --color-accent-carrot: var(--accent-carrot);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* Delightful polish */
+::selection { background: color-mix(in oklab, var(--trust-green), white 30%); color: white; }
+.shadow-soft { box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.12); }
+.glass { backdrop-filter: saturate(150%) blur(10px); background: rgb(255 255 255 / 0.7); }
+
+/* Animated gradient for hero */
+@keyframes gradient-slow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+.animate-gradient-slow { background-size: 200% 200%; animation: gradient-slow 10s ease infinite; }
+
+/* Blob animations */
+@keyframes blob { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } }
+.animate-blob { animation: blob 7s ease-in-out infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+/* 3D Floating leaves with perspective */
+.leaf-3d { 
+  position: absolute; 
+  font-size: 2.5rem; 
+  opacity: 0.4; 
+  animation: float-3d 15s ease-in-out infinite; 
+  top: 20%; 
+  left: 10%;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+  will-change: transform;
+}
+.leaf-3d.delay-200 { animation-delay: 0.2s; top: 40%; left: 75%; }
+.leaf-3d.delay-500 { animation-delay: 0.5s; top: 70%; left: 25%; }
+.leaf-3d.delay-700 { animation-delay: 0.7s; top: 15%; left: 85%; }
+
+@keyframes float-3d { 
+  0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); } 
+  25% { transform: translateY(-20px) translateX(10px) rotate(5deg); } 
+  50% { transform: translateY(-10px) translateX(-10px) rotate(-5deg); } 
+  75% { transform: translateY(-30px) translateX(5px) rotate(3deg); } 
+}
+
+/* Slide animations */
+@keyframes slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slide-down { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+.animate-slide-up { animation: slide-up 0.6s ease-out forwards; }
+.animate-slide-down { animation: slide-down 0.5s ease-out forwards; }
+.animation-delay-200 { animation-delay: 0.2s; opacity: 0; }
+.animation-delay-400 { animation-delay: 0.4s; opacity: 0; }
+.animation-delay-600 { animation-delay: 0.6s; opacity: 0; }
+
+/* Auto-scroll marquee for testimonials */
+.marquee { animation: scroll-x 30s linear infinite; }
+@keyframes scroll-x { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+
+/* Ripple effect for buttons */
+@keyframes ripple { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(4); opacity: 0; } }
+.ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.6); animation: ripple 0.6s ease-out; }
+
+/* Shimmer loading effect */
+@keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+.animate-shimmer { 
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); 
+  background-size: 1000px 100%; 
+  animation: shimmer 2s infinite; 
+}
+
+/* Pulse scale for attention */
+@keyframes pulse-scale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+.animate-pulse-scale { animation: pulse-scale 2s ease-in-out infinite; }
+
+/* Slide animations for cart */
+@keyframes slide-left { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.animate-slide-left { animation: slide-left 0.3s ease-out; }
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.animate-fade-in { animation: fade-in 0.2s ease-out; }

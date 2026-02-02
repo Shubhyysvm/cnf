@@ -1,0 +1,25 @@
+{
+  "name": "@countrynaturalfoods/admin-services",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "zod": "^3.22.4",
+    "@countrynaturalfoods/admin-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}

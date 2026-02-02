@@ -1,0 +1,23 @@
+{
+  "name": "countrynatural",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "fmt": "prettier -w .",
+    "lint": "pnpm -r --workspace-root=false run lint",
+    "dev": "echo \"Use --filter to run individual apps (web/api/mobile).\""
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "@types/react": "18.2.43",
+    "@types/react-dom": "^18",
+    "prettier": "^3.3.3",
+    "turbo": "^2.2.3"
+  }
+}

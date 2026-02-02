@@ -1,0 +1,2 @@
+export { Input } from './index';
+

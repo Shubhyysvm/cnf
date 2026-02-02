@@ -1,0 +1,98 @@
+/* UI Package Global Styles */
+
+/* Form Elements - Consistent Styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+/* Ensure proper spacing for form labels */
+label {
+  display: block;
+  margin-bottom: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Button consistency */
+button,
+[role="button"] {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Remove default button styling on various browsers */
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+/* Ensure inputs don't overflow containers */
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+/* Better text overflow handling */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Prevent line breaks in numbers/currency */
+.nowrap {
+  white-space: nowrap;
+}
+
+/* Smooth transitions on interactive elements */
+a,
+button,
+input,
+select,
+textarea {
+  transition: all 200ms ease-in-out;
+}
+
+/* Focus states for accessibility */
+:focus-visible {
+  outline: 2px solid #2F5233;
+  outline-offset: 2px;
+}
+
+/* Improved contrast and readability */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

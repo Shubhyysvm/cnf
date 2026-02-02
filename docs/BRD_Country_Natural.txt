@@ -1,0 +1,2064 @@
+# Business Requirements Document (BRD)
+# Project: Country Natural Foods — E‑Commerce Web + Android + iOS
+# Version: 0.6.2 (Admin Dashboard & Performance Metrics)
+# Date: 2026-01-25
+# Status: Active Development
+# Brand Rationale: “Country Natural” conveys earthy authenticity, farm-fresh quality, and simple, wholesome living — a trusted brand for families seeking clean, honest nutrition.
+
+================================================================================
+PROGRESS_TRACKING_OVERVIEW
+--------------------------------------------------------------------------------
+Phase_1_Research            : 100% ✓ (Completed: Tech stack chosen, BRD finalized)
+Phase_2_Core_Web_App        : 100% ✓ (Infrastructure: 100%, API: 100%, Web UI: 99%, Advanced variants: 98%, Admin Portal: 92%, Header system ✓, Wishlist frontend ✓, Enhanced categories ✓, Checkout page ✓, Admin Dashboard ✓)
+Phase_3_Mobile_Apps         : 97% (11 screens complete: Home, Products, ProductDetail, CategoryProducts, Login, Register, OTP, Profile, About, OrderSuccess, OrderDetails, Orders; Category navigation ✓, Authentication ✓, Profile management ✓, Avatar upload with professional image editor ✓, Cart context ✓, Enhanced UX/UI ✓, Footer system complete (all screens) ✓, Category card transitions ✓, ProductCard spacing refinement ✓, Image error suppression ✓, ProductDetail cart UX ✓, Cart/Wishlist session migration ✓, Buy Now checkout ✓, Order tracking ✓, Cart/Wishlist empty states with scrollable footers ✓, Wishlist UI pending)
+Phase_4_Optimization        : 0%
+Phase_5_Growth_Enhancements : 0%
+Phase_6_Maintenance         : 0%
+
+Feature_Progress_Snapshot:
+- Catalog_Management        : 95% (DB entities ✓, API endpoints ✓, enhanced seed data ✓, multi-image support ✓, product attributes ✓, product denormalization (productName in all related tables) ✓, category-based navigation ✓)
+- Product_Detail/Variants   : 100% ✓ (Enhanced entities ✓, independent variant pricing ✓, discount/offer per variant ✓, shelf-life ✓, rating per variant ✓, stock per variant ✓, variant-based images ✓, recommended products from same category ✓, product_variants.weight rename ✓, CART UX ENHANCEMENT: Integrated cart controls ✓, editable quantity input ✓, smart validation ✓, compact UI ✓, professional price display ✓)
+- Product_Images            : 98% (ProductImage entity ✓, unlimited images per product ✓, variant-specific folder structure (hero-card/info-card/other) ✓, MinIO integration ✓, image sync service ✓, admin upload interface ✓, displayOrder/isDefault removed for insertion-order display ✓, mobile image URL normalization ✓, variant-driven hero image switching ✓)
+- Product_Attributes        : 90% (ProductAttribute entity ✓, comma-separated custom tags ✓, seeding complete ✓, frontend display pending)
+- View_Tracking             : 50% (ProductView entity created for 24h rolling window tracking, API implementation pending)
+- Stock_Notifications       : 50% (StockNotification entity created, UI pending, admin notification flow pending)
+- Best_Seller_Latest_Arrival: 90% (Flags added to Product entity ✓, seeding with isBestSeller/isLatestArrival ✓)
+- Search_+_Filters          : 25% (Basic search API ✓, header search bar ✓, sort functionality (price/name/rating) ✓, OpenSearch pending, advanced filters pending)
+- Cart_&_Checkout           : 100% ✓ (Cart entities ✓, 6 API endpoints ✓, mini-cart UI ✓, guest session support ✓, variantId UUID references ✓, order entities ✓, full cart page ✓, order confirmation ✓, comprehensive API documentation ✓, ENHANCED CHECKOUT: 3-step progress flow (Shipping → Payment → Review) ✓, contact & delivery address form with validation ✓, delivery speed selection (Standard free/Express ₹150) ✓, 4 payment methods (UPI/Card/NetBanking/COD) with visual cards ✓, card details form ✓, promo code system with mock codes (WELCOME10/SAVE20/ORGANIC15/FIRST10) ✓, order review step ✓, estimated delivery dates ✓, variant weights displayed throughout ✓, trust badges (Secure/Verified/Encrypted) ✓, animated gradient UI ✓, email validation ✓, phone validation (10-digit India) ✓, save information checkbox ✓, form persistence ✓, SESSION MIGRATION: Guest-to-user cart/wishlist merge on login ✓, session cleanup on logout ✓, callback registration pattern ✓, proper session ID management ✓, MOBILE RELIABILITY: JWT base64url decoding + direct token pass-through to headers to guarantee x-user-id during merge ✓, BUY NOW FLOW: Direct checkout without cart ✓, payload-based order creation ✓, single-item purchases ✓, guest Buy Now support ✓, MOBILE CART/WISHLIST UI: Footer component integration ✓, scrollable empty states ✓, Footer visibility in all states (empty/populated) ✓, proper spacing before fixed elements ✓)
+- Payments_Gateway_Stack    : 30% (UI payment method visual selection with 4 cards (UPI/Card/NetBanking/COD) ✓, card details form (Card Number/Expiry/CVV) ✓, promo code validation system ✓, mock payment codes for testing ✓, validation error handling ✓, Razorpay/Stripe integration pending)
+- Orders_&_Fulfillment      : 98% ✓ (Order entities ✓, API endpoints ✓, order creation ✓, confirmation page ✓, ORDER TRACKING: OrdersScreen with status filters ✓, OrderDetailsScreen ✓, order number formatting (CNF-/CNF-TEST- prefix) ✓, guest order support ✓, Buy Now order creation fallback ✓, payload-based orders without cart ✓, UI polish (wrapped order numbers, status badges, price breakdowns) ✓, ORDER STATUS ENHANCEMENT: out_for_delivery status added to enum ✓, PostgreSQL migration executed ✓, OrderStatusHistory entity tracking ✓, admin view header fix ✓, status transitions logged ✓, EMAIL NOTIFICATIONS: Admin & customer emails ✓, professional templates ✓, variant weights displayed ✓, order summary at top ✓, admin action links (View Order, Process Order, Update Inventory) ✓, social media links ✓, Mailhog integration for testing ✓)
+- Subscriptions/Auto-Reorder: 0%
+- User_Accounts/Auth        : 98% (JWT ✓, bcrypt password hashing (10 rounds) ✓, 7 mobile auth endpoints ✓, mobile screens (Login/Register/OTP/Profile) ✓, email+password login with navigation ✓, phone+OTP login (6-digit, 10-min expiry) with navigation ✓, AsyncStorage persistence (30-day tokens) ✓, phone stored in users + user_profiles tables ✓, clean error messages ✓, Authorization headers ✓, user profile display with avatar ✓, ADDRESS MANAGEMENT: CRUD with Home/Work/Other types ✓, custom labels for "Other" type ✓, duplicate prevention validation ✓, logout with session cleanup ✓, admin auth system (separate signup/login) ✓, AVATAR UPLOAD WITH IMAGE EDITOR: Professional image editing (rotate/zoom/position) ✓, precise crop calculation with scale mapping ✓, live preview sync with final output ✓, scrollable controls UI ✓, arrow buttons for image positioning ✓, 300x300 optimized avatar ✓, MinIO storage with auto-deletion ✓, token refresh pending)
+- Wishlist/Favorites        : 100% ✓ (Wishlist entity ✓, 7 API endpoints (GET/POST/DELETE + check variant + merge) ✓, guest session support (7-day TTL) ✓, variantId UUID support ✓, merge on login ✓, WishlistService + WishlistController ✓, validation DTOs ✓, error handling ✓, Swagger docs ✓, variant pricing from DB ✓, WEB UI COMPLETE: WishlistContext ✓, WishlistDrawer slide-over ✓, ProductCard integration ✓, live counters ✓, add to cart from wishlist ✓, mobile UI pending)
+- Mobile_Navigation_API     : 100% ✓ (9 endpoints ✓, real-time badges (cart, orders, wishlist) ✓, user personalization (4 segments) ✓, quick actions per segment ✓, user preferences ✓, dynamic announcements ✓, analytics tracking ✓, NavPreference entity ✓, 9 DTOs ✓, JWT guards ✓, zero compilation errors ✓)
+- Reviews_Ratings           : 15% (DB field added per product & variant ✓, admin moderation module ✓, API pending, frontend UI pending)
+- Blog/Content_Hub          : 0%
+- Loyalty/Rewards           : 0%
+- Admin_Console             : 92% ✓ (17 admin modules ✓, product CRUD ✓, variant management ✓, image upload ✓, ADMIN DASHBOARD COMPLETE: Dashboard with real-time KPIs ✓, performance metrics (conversion rate, customer satisfaction, avg order value, response time) ✓, order breakdown by status (pending/confirmed/shipped/out_for_delivery/delivered/cancelled) ✓, revenue calculations with DECIMAL type handling ✓, recent orders display ✓, low stock count based on variant thresholds ✓, comprehensive logging for debugging ✓, reviews/coupons/payments/refunds/returns modules ✓, inventory monitoring ✓, analytics ✓, shared packages (admin-types, admin-api-client) ✓, authentication (signup/login) ✓, protected routes ✓, role-based access control pending)
+- Analytics_&_Reporting     : 0%
+- Push_Notifications        : 0%
+- SEO_Structured_Data       : 0%
+- Performance_CDN_Tuning    : 0%
+- Security_Compliance       : 15% (CORS enabled, HTTPS pending, Auth progressing)
+- Mobile_Native_Features    : 0%
+- Internationalization      : 0%
+
+Mobile_App_Progress (Country Natural Foods):
+- Navigation: React Navigation stack with 11 screens + DYNAMIC SIDE NAV API System (real-time badges, personalization, announcements) ✓
+- Branding: Country Natural Foods logo, color usage aligned with web palette (#2E7D32 primary green)
+- Authentication: Complete system with Login/Register/OTP/Profile screens, JWT token persistence, AsyncStorage integration, phone stored in both users and user_profiles tables, clean error messages, Authorization headers, navigation after login/OTP
+- User Profile: ENHANCED PROFILE HUB - Avatar display (initials or image), user info (name, email, phone), Quick Actions grid (Wishlist/Cart/Organic Info/Delivery) ✓, My Orders section with status-colored badges (Pending/Processing/Shipped/Delivered/Cancelled) ✓, Track Active Orders filtering processing+shipped ✓, Preferences & Information section (Dietary/Delivery/Certifications/Loyalty/Referral) ✓, ADDRESS SYSTEM REDESIGN: Home/Work/Other types (replacing Shipping/Billing) ✓, custom labels for "Other" addresses (e.g., Farm, Village) ✓, duplicate address prevention with server-side validation ✓, visual icon representation (🏠/💼/📍) ✓, add/edit/delete with validation ✓, default address handling ✓, logout with confirmation ✓
+- Category Navigation: Category grid → CategoryProducts screen → Product detail with recommended products
+- Footer System: COMPLETE IMPLEMENTATION - Footer component integrated across all screens (Products, CategoryProducts, LatestArrivals, Cart, Wishlist) ✓, scrollable implementation inside ScrollView/FlatList ✓, empty state support (Cart/Wishlist show footer even when empty) ✓, proper spacing before fixed elements (100px in CartScreen before checkout footer, 30px in WishlistScreen) ✓, StatusBar consistency in empty states ✓, Best Sellers section displayed above footer ✓
+- HomeScreen: 
+  * Auto-scrolling hero carousel with persuasive text overlays (4 slides: Farm Fresh Daily, Nourish Your Family, Pure Ingredients, Sustainable Living)
+  * TopNavBar with conditional user avatar (or Login button when logged out), navigation to Profile
+  * Announcement bar, countdown bar, trust strip
+  * CategoryGrid with alternating image/text layout: clean full-width image display (no gradient overlays on image), natural sharp transition to text section (#F5F5F5), persuasive descriptions, category badges (TRENDING/NEW/SAFE/POPULAR/SALE), product counts, "Explore More" button after 10 categories, silent fallback for missing images (no console warnings)
+  * Latest Arrivals section with 2-column grid
+  * Best Sellers section with 2-column grid
+  * Why Choose Us cards, testimonials carousel
+  * CTA section, comprehensive footer with contact info & social links
+  * Animated gradient background
+- ProductCard: 
+  * Unified component used across Home, Products, CategoryProducts, and ProductDetail (recommended/featured sections)
+  * Optimized height (330-350px, increased from 300-320px for improved variant/button spacing)
+  * Wishlist heart icon (top-right) with haptic feedback and toggle state
+  * Product variants selector chips with proper spacing (32px bottom margin + 16px meta padding) - clear separation from Add to Cart button
+  * Variant-driven hero image switching: image updates immediately when variant chip is selected
+  * Image URL normalization with API_BASE prepending for reliable display
+  * Tags/badges moved to product detail page only (removed from card for cleaner layout)
+  * Add to Cart button with cart icon and haptic feedback
+  * Expo Image with disk caching for performance, silent error handling (fallback to emoji placeholder without console warnings)
+  * Low stock ribbon, rating stars, badges
+  * Integrates CartContext for state management
+- Product Listing: `ProductsScreen` fetches featured products; renders `ProductCard` with all enhancements; Footer component at bottom
+- Category Products: `CategoryProductsScreen` with filters/sorts; Featured products section (horizontal scroll) above Footer; Footer component at bottom
+- Product Detail: 
+  * Full product information with image carousel, variant selection, quantity input, tabs (Details/Reviews)
+  * CART UX ENHANCED: Integrated cart controls directly in bottom CTA bar (replace "Add to Cart" when items in cart)
+  * Smart quantity management: Editable TextInput allowing free typing, validation only on blur/enter
+  * Minus button removes item from cart when qty=1, otherwise decrements
+  * Empty input handling: Removing all digits and tabbing out removes item from cart
+  * Dynamic price display: Shows ₹X.XX (unit price) when not in cart; shows ₹Y.YY × n in cart when items present
+  * Compact cart controls: Integrated into single bar with minus/editable-input/plus buttons (32x24px)
+  * Stock validation: Prevents exceeding available quantity, shows error toast
+  * Haptic feedback on all interactions (plus, minus, errors)
+  * Variant selection with visible green background when active
+  * Tags displayed below price (full list using product.tags or product.badges)
+  * Section reordering: Same-category recommended products appear BEFORE featured products
+  * Featured products section follows recommended products
+  * Footer component at bottom for consistency with CategoryProducts page
+  * Short description near product name; full description in Details tab
+- Cart State: Context-based cart (`CartContext`) with add/remove/clear, quantity merge, variant support
+- API Integration: 
+  * Centralized ProductRepository (product.repository.ts) for scalable DB queries - single source of truth
+  * ProductRepository methods: findProducts (with flexible filters), findBySlug, autocomplete, getVariants, saveVariant
+  * Authentication API: 7 endpoints (POST /auth/register, /auth/verify-register, /auth/login, /auth/send-otp, /auth/verify-otp, /auth/logout; GET /users/:id, /users/:id/addresses; POST/PUT/DELETE addresses)
+  * Cart API: 5 endpoints with x-session-id header for guest support
+  * Wishlist API: 6 endpoints with guest/user dual support
+  * Category-based product fetching with exclude parameter for recommendations
+  * Products API with variants, categories, certifications
+  * Categories API with image URLs (8 categories seeded with Unsplash images)
+  * All products (6 total) seeded with variants: Quinoa (3 sizes), Almond Butter (3 sizes), Bhringraj Oil (2 sizes), Wild Turmeric Soap (2 sizes), Neem Purify Bar (2 sizes), Rosehip Face Oil (2 sizes)
+  * Autocomplete search
+- Performance: Expo Image disk caching, haptic feedback, animated interactions
+- Libraries: `react-native-linear-gradient`, `react-native-vector-icons`, `expo-image`, `expo-haptics`, `@expo/vector-icons` (MaterialCommunityIcons)
+- Image System: 
+  * getProductHeroImage() - selects best hero image from all variants
+  * getVariantHeroImage() - gets variant-specific hero image for dynamic switching
+  * normalizeImageUrl() - ensures all image URLs include API_BASE for proper loading
+  * Priority order: hero-card > info-card > other > default fallback
+- Database: All products have weight/volume variants with price/sku/stockQuantity, categories have imageUrl field, users table has phone column
+
+(Progress fields will be updated as implementation advances.)
+================================================================================
+1. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------
+Build a high‑performance, scalable, multi‑channel (web + Android + iOS) e‑commerce platform under the Country Natural Foods brand, specializing in certified organic products. Emphasis on trust, speed, recurring revenue (subscriptions + loyalty), rich education (blog + guides), and seamless omnichannel experience.
+
+2. OBJECTIVES & SUCCESS METRICS
+--------------------------------------------------------------------------------
+Primary Objectives:
+- Fast browsing & purchase across platforms.
+- Authenticity via certifications, lab reports, traceability.
+- Recurring revenue via subscriptions + loyalty.
+- Educational content for conversion & retention.
+- Real-time inventory & fulfillment visibility.
+Success Metrics (Initial Targets):
+- Page LCP < 1.8s (median) on 4G mid-tier device.
+- Mobile app crash-free sessions > 99.5%.
+- Checkout completion rate > 65% of initiated checkouts.
+- Repeat purchase rate > 30% within 90 days.
+- Subscription attach rate > 15% of eligible SKUs.
+- NPS > 55 within first year.
+
+3. SCOPE
+--------------------------------------------------------------------------------
+In-Scope (Phase 1–3):
+- Catalog, product variants, batch details, certifications.
+- Search, auto-suggest, faceted filtering.
+- Cart, guest/authenticated checkout, saved addresses.
+- Multi-gateway payments (Razorpay, Stripe, PayPal; UPI where applicable).
+- Order tracking, invoices, fulfillment events.
+- Basic subscription engine.
+- Accounts, wishlists, reviews.
+- Blog CMS; loyalty points; admin portal; push notifications.
+- Image optimization, CDN, caching; basic referral tracking; analytics.
+Out-of-Scope (Initial): marketplace multi-vendor, AR, complex WMS, ERP, B2B portal.
+
+4. STAKEHOLDERS
+--------------------------------------------------------------------------------
+- Founder (You), Product (AI-managed context), Eng (BE/FE/Mobile/DevOps), Design, Content, Marketing, Support/Ops, QA, Data.
+
+5. USER ROLES & PERMISSIONS (High-Level)
+--------------------------------------------------------------------------------
+- Visitor, Customer, Admin, Fulfillment Operator, Content Editor, Support Agent.
+
+6. CORE VALUE PROPOSITIONS
+--------------------------------------------------------------------------------
+- Trust & Transparency; Education; Performance; Personalization; Retention.
+
+7. ASSUMPTIONS & CONSTRAINTS
+--------------------------------------------------------------------------------
+- Certifications available; payment tokenization; container-friendly hosting.
+- Compliance for tax/invoice; potential data residency; limited content bandwidth.
+
+8. HIGH-LEVEL FEATURE LIST (Indexed)
+--------------------------------------------------------------------------------
+F001 Catalog & Categories
+F002 Product Detail (Variants, Ingredients, Certifications)
+F003 Advanced Search & Filters
+F004 Cart & Mini-Cart
+F005 Checkout (Guest + Authenticated)
+F006 Payment Processing (Multi-gateway + Retry)
+F007 Order Management & Tracking
+F008 Subscriptions / Auto-Reorder
+F009 User Accounts & Profiles
+F010 Address Book & Shipping Options
+F011 Wishlist / Favorites
+F012 Reviews & Ratings + Moderation
+F013 Loyalty & Reward Points
+F014 Coupons, Deals, Promotions Engine
+F015 Blog / Content Hub (CMS)
+F016 Analytics & Event Tracking
+F017 Notifications (Email + Push + In-App)
+F018 Admin Console (RBAC)
+  - Product management (add/remove/edit products)
+  - Weight variant management
+  - Discount management
+  - Latest arrivals and homepage banners (slide bars)
+  - Order management
+  - User management
+  - Analytics & reporting
+  - Security: Encrypted passwords, role-based access, protected endpoints, no data leaks
+  - Admin UI: Protected route (`/admin`) or section shown after admin login
+F019 Inventory & Stock Control (Basic)
+F020 Reporting & Dashboards
+F021 Referral / Affiliate Tracking
+F022 SEO Enhancements (Structured Data, Sitemaps, Meta)
+F023 Accessibility & Localization
+F024 Security & Compliance Layer
+F025 Performance Optimization Layer
+F026 Mobile Native Feature Integration (Camera, Share, Push)
+
+9. DETAILED FUNCTIONAL REQUIREMENTS (Initial Draft)
+--------------------------------------------------------------------------------
+F001–F026 remain as previously specified (catalog, search, checkout, payments, orders, subscriptions, accounts, reviews, loyalty, promotions, blog, analytics, notifications, admin, inventory, reporting, referral, SEO, accessibility/localization, security, performance, mobile features). Full detail to be expanded per phase.
+
+10. NON-FUNCTIONAL REQUIREMENTS
+--------------------------------------------------------------------------------
+Performance, Scalability, Security, Reliability, Maintainability, Observability, Compliance, Accessibility as defined in initial draft.
+
+11. TECHNOLOGY STACK (Proposed)
+--------------------------------------------------------------------------------
+Frontend Web: Next.js (React, SSR/ISR) + Tailwind CSS
+Mobile Apps: React Native (Expo)
+Backend: Node.js + NestJS
+Database: PostgreSQL + Redis + OpenSearch/Elastic
+Storage: S3-compatible
+Messaging: RabbitMQ (initial) / Kafka (future)
+Auth: JWT + OAuth (Google/Apple)
+Payments: Stripe, Razorpay, PayPal
+Infrastructure: Docker, Kubernetes, Terraform
+CDN: Cloudflare/CloudFront (finalize later)
+CI/CD: GitHub Actions
+Monitoring: Prometheus, Grafana, Sentry
+Analytics: Segment / GTM
+
+12. ARCHITECTURE OVERVIEW
+--------------------------------------------------------------------------------
+Presentation (Web/Mobile/Admin) → API Gateway (REST; optional GraphQL) → Services (Catalog, Search, Orders, Payments, Subs, Users, Auth, Loyalty, Content) → Data (Postgres, Redis, Search) → Integrations (Payments, Email, Push, Analytics).
+
+13. DATA MODEL (High-Level Entities & Relationships)
+--------------------------------------------------------------------------------
+Core Entities:
+- User, Category, Certification
+- Product (with enhanced fields: isBestSeller, isLatestArrival)
+- ProductImage (unlimited images per product, supports primary image)
+- ProductAttribute (custom tags: Organic, Certified, Vegan, etc.)
+- ProductVariant (enhanced: independent price, discount, offer, rating, stock, shelf-life)
+- ProductView (tracks user views in 24-hour rolling window, per-user not per-session)
+- StockNotification (out-of-stock alerts from users)
+- Address, Cart, CartItem, Order, OrderItem
+- PaymentTransaction, Subscription, Review, LoyaltyLedger
+- Coupon, Promotion, BlogPost, BlogCategory
+- ReferralCode, InventoryRecord, AuditLog
+
+Enhanced Product-Variant Model:
+- Product is the parent entity with category, certifications, multiple images, and attributes
+- ProductVariant belongs to Product, each with:
+  * Unique price, discount %, offer text
+  * Independent SKU and stock quantity with low-stock threshold
+  * Variant-specific rating & review count
+  * Shelf life (e.g., "180 DAYS", "12 MONTHS")
+  * compareAtPrice for discount display
+- ProductImage supports multiple images per product with display order and primary flag
+- ProductAttribute (comma-separated values) e.g., ["Organic", "Cold-Pressed", "Non-GMO"]
+- ProductView logs user views (one entry per user per product per day, rolling 24h window)
+- StockNotification captures user email requests for out-of-stock variants
+
+Flags for Product Categorization:
+- isBestSeller (boolean) → Auto-appears in "Best Sellers" section
+- isLatestArrival (boolean) → Auto-appears in "Latest Arrivals" section
+- isFeatured (boolean) → Featured on homepage
+
+14. API DESIGN PRINCIPLES
+--------------------------------------------------------------------------------
+Versioned endpoints, consistent naming, cursor pagination, standard error envelope, idempotency, rate limits.
+
+15. UI/UX GUIDELINES (Brand-Specific)
+--------------------------------------------------------------------------------
+- Palette: Trust green (#2E7D32), soft sprout green (#A5D6A7), warm neutral (#FAF7F2), accent carrot (#F49F0A).
+- Typography: Inter or system UI; accessible sizes/contrast.
+- Signature components: ProductCard, VariantSelector, CertificationBadge, TrustBar, SubscriptionWidget, LoyaltyChip.
+- Tone: Honest, family-friendly, simple language.
+
+16. ANALYTICS & EVENT TAXONOMY (Seed)
+--------------------------------------------------------------------------------
+Core events: product_view, add_to_cart, checkout_start/complete, subscription_create/pause/cancel, review_submit, loyalty_earn/redeem, referral_signup, search_query, blog_post_view.
+
+17. SECURITY & PRIVACY
+--------------------------------------------------------------------------------
+OWASP mitigations, HTTPS, CSP, JWT best practices, RBAC, secrets management, SCA.
+
+18. PERFORMANCE STRATEGY
+--------------------------------------------------------------------------------
+SSR + edge caching (SWR), Redis caching, responsive images (WebP/AVIF), code splitting, prefetch strategies.
+
+19. DEPLOYMENT & ENVIRONMENTS
+--------------------------------------------------------------------------------
+Local: Docker Compose (Postgres, Redis, Search, MinIO)
+Staging: K8s namespace, seeded data, perf gates
+Prod: Multi-AZ, autoscaling, blue/green or canary; rollback automation
+Secrets: Vault/ASM; never in repo
+
+20. LOGGING & OBSERVABILITY
+--------------------------------------------------------------------------------
+Structured logs, tracing (OpenTelemetry), key metrics, alerting on SLOs and anomalies.
+
+21. TEST STRATEGY
+--------------------------------------------------------------------------------
+Unit (Jest), contract tests, integration (checkout/subs), load (k6), periodic security scans (ZAP baseline).
+
+22. ROADMAP (Phased)
+--------------------------------------------------------------------------------
+P1 MVP Web; P2 Enhancements (reviews, loyalty, advanced search); P3 Mobile apps; P4 Subscriptions + personalization; P5 Optimization + i18n; P6 Scale & maintenance.
+
+23. RISKS & MITIGATIONS
+--------------------------------------------------------------------------------
+Search complexity → staged synonyms; gateway downtime → multi-gateway fallback; inventory inaccuracies → reconciliation; churn → flexible pauses/incentives; perf regressions → Lighthouse CI.
+
+24. OPEN QUESTIONS
+--------------------------------------------------------------------------------
+- Finalize mobile framework choice RN vs Flutter. (Currently using RN/Expo.)
+- Single vs multi-currency at launch.
+- Personalization rule depth at MVP.
+- Domain availability for countrynatural.com (to be checked externally).
+
+25. CHANGE LOG
+--------------------------------------------------------------------------------
+0.1.0 (2025-11-15): Initial draft under temporary location.
+0.1.1 (2025-11-15): Migrated to interim brand folder; minor UI notes.
+0.1.2 (2025-11-15): Rebranded to temporary brand; consolidated under new folder and updated brand sections.
+0.1.3 (2025-11-15): Infrastructure completed - Docker services running, pnpm monorepo configured, all 3 apps scaffolded.
+0.1.4 (2025-11-15): Database layer completed - TypeORM entities created (Product, Category, Certification, ProductVariant), schema auto-generated, API endpoints implemented for products and categories.
+0.1.5 (2025-11-15): Seed data added - 4 organic products with certifications and categories. API running on localhost:3001, Web on localhost:3000. Homepage UI in progress.
+0.1.6 (2025-11-15): Homepage completed - Full responsive homepage with branding, hero section, categories display, featured products grid (API-integrated), trust badges, why choose us section, and footer. Inter font applied, brand colors configured.
+0.1.7 (2025-11-15): Dynamic UI components added - Animated Hero (gradient, floating leaves), CountdownBar (real-time urgency), PressStrip (social proof logos), Testimonials carousel (auto-scroll). Scroll reveal animations via IntersectionObserver. Fixed hydration mismatch in CountdownBar. Added product listing, detail, and category pages with API integration. External image support enabled (Unsplash/Shopify). Keyframe animations for gradient breathing and marquee scrolling.
+0.1.8 (2025-11-16): Shopping cart fully implemented - Cart & CartItem entities created with TypeORM. REST API endpoints (GET/POST/PATCH/DELETE) for cart management. CartContext with React Context API for state management. Session-based cart with localStorage persistence. Mini-cart slide-over drawer with smooth animations. Cart icon with badge in navigation. Add-to-cart functionality in ProductCard with loading states. Enhanced UI with 3D hover effects, wishlist hearts, social proof notifications, premium animations throughout.
+0.1.9 (2025-11-16): Toast notifications implemented using react-hot-toast for all cart actions (add/remove/update/clear) with brand-styled success/error messages. Sticky CTA bar added to product detail pages with quantity selector, auto-shows on scroll down 400px. Product detail page converted to client component with full cart integration. All cart features now complete with user feedback and conversion-optimized UX.
+0.2.0 (2025-11-16): Premium MiniCart UX enhancement - Gradient green header with shopping bag icon, free shipping progress bar, product images, hover-to-delete overlay, lucide-react icons, enhanced empty state, gradient checkout button, improved spacing and typography, shadow effects. Fixed AnnouncementBar hydration error with mounted state check.
+0.2.1 (2025-11-16): Checkout page implemented with 2-step flow (shipping → payment). Shipping form includes all standard fields. Payment method selection (credit card / PayPal). Order summary sidebar; free shipping threshold logic pending INR update. Fixed Next.js 16 async warnings (await searchParams/params).
+0.3.0 (2025-11-16): Complete order flow with variants and INR currency implemented. Order & OrderItem entities created. OrdersService with cart clearing logic, total calculations. OrdersController endpoints wired; order confirmation UI. Variant selection and price multipliers throughout cart/checkout/order. Currency converted to INR across the app.
+0.3.1 (2025-12-01): Rebranded to Country Natural Foods. Mobile app progress: Home screen with animated gradient + brand sections; Products and Product Detail screens with API integration; `ProductCard` component; `CartContext` with add/remove/clear and quantity merges; About screen scaffold. BRD and tracker updated to new name.
+0.4.0 (2025-12-05): Advanced Variant Management System. New entities: ProductImage (unlimited images per product), ProductAttribute (custom tags), ProductView (24h user tracking), StockNotification (out-of-stock alerts). Enhanced ProductVariant with independent price/discount/offer/shelf-life/rating. Added isBestSeller, isLatestArrival flags to Product. Updated database schema with proper indexes. Created seed-cnf-v2.ts with enhanced seeding. BRD updated with comprehensive variant management documentation. API roadmap for image gallery, view tracking, stock notifications.
+0.4.1 (2025-12-08): Storage bucket standardized to `cnf-products` (legacy `products` bucket removed), MinIO setup script aligned, API MinIO defaults updated. Admin portal build fixed for Tailwind CSS v4 (PostCSS plugin + globals import), admin UI verified running on http://localhost:3002.
+0.5.0 (2026-01-11): Authentication system complete with mobile Login/Register/OTP screens and 5 backend endpoints. Cart & Wishlist with guest support (11 API endpoints, 7-day sessions). Admin portal with 17 modules. Mobile app at 75% with 8 screens. Image system complete with variant-based structure. Database migrations (10 total) executed.
+0.5.1 (2026-01-12): Authentication system enhanced - Added ProfileScreen with user avatar, logout functionality, address management (CRUD), phone stored in both users and user_profiles tables. Navigation improvements (login/OTP flows navigate to Home). Clean error messages with JSON parsing. Authorization headers added to all API requests. User profile display with initials/avatar. Default address handling. UsersModule created with 5 endpoints. Database migration for phone column. Mobile app now 80% complete with 9 screens.
+0.5.2 (2026-01-12): Mobile UX/UI enhancement - CategoryGrid alternating layout with smooth 60% gradient fade (3-color progression), no visible seam lines between image/text. ProductCard optimized: height reduced to 300-320px, variant spacing improved (8px margin), variant-driven hero image switching, image URL normalization with API_BASE. Tags moved from ProductCard to ProductDetail page. ProductDetail section reordering (same-category products before featured). Footer added to ProductsScreen and CategoryProductsScreen. Manual quantity TextInput with live total price updates. TypeScript config updated (moduleResolution: node16). All image loading errors resolved. Mobile app now 85% complete.
+
+0.5.3 (2026-01-15): MOBILE SIDE NAVIGATION API SYSTEM - Complete backend implementation with 9 powerful endpoints for dynamic menu system. Features: (1) Real-time badge counts (cart items, orders in transit, wishlist, notifications), (2) User personalization based on 4 purchase segments (new_user, first_time_buyer, occasional_buyer, frequent_buyer), (3) Personalized quick actions per segment (Reorder, For You, Subscribe & Save, Addresses, Help), (4) User menu preferences persistence (menuOrder, hiddenItems, favoriteItems, theme, animations, notifications), (5) Dynamic announcements system (flash sales, restocks, new arrivals with CTAs), (6) Navigation analytics tracking for UX optimization. Endpoints: GET /menu, GET /badges, GET /quick-actions, GET/PUT /preferences/:userId, GET /announcements, POST /analytics, GET /config, GET /analytics/dashboard. Database: NavPreference entity (user customization), cascade delete on user deletion. Files Created: mobile-nav.controller.ts (410 lines, 9 endpoints with Swagger docs), mobile-nav.service.ts (563 lines, real-time badge logic & personalization), mobile-nav.module.ts (module registration), dto/index.ts (346 lines, 9 DTO classes with validation), nav-preference.entity.ts (TypeORM entity). Security: Created jwt-auth.guard.ts (JWT validation), updated optional-jwt.guard.ts (flexible authentication). Documentation: MOBILE_NAV_API.md (500+ lines, complete API reference), MOBILE_NAV_QUICK_REFERENCE.md (quick guide with examples). Replaces: Hardcoded 8-item menu array in HomeScreen with fully dynamic, API-powered navigation. Works for both guest users (no token) and authenticated users. Integration Status: Zero TypeScript compilation errors. Module registered in app.module.ts. All entities exported in entities/index.ts. Ready for mobile client integration and database migration. Next Steps: (1) Create nav_preferences table migration, (2) Update HomeScreen to fetch /mobile/nav/menu, (3) Implement badge polling (30-second intervals), (4) Replace hardcoded sideNavOptions with API response, (5) Add menu interaction analytics tracking.
+
+0.5.8 (2026-01-16): CART/WISHLIST SESSION MIGRATION SYSTEM - Fixed critical data persistence bug where guest cart/wishlist data wasn't migrating to user accounts on login and persisted after logout. Implemented callback registration pattern where Cart and Wishlist contexts register merge/reset functions with AuthContext. AuthContext orchestrates session transitions during login/logout. Features: (1) mergeGuestCartToUser() - Calls POST /api/cart/merge, updates session ID from guest_* to user-${userId}, refreshes cart items, (2) mergeGuestWishlistToUser() - Calls POST /api/wishlist/merge, migrates guest items to user account, (3) resetToGuest() for both contexts - Clears items, creates new guest session on logout, (4) Callback registration - registerCartCallbacks() and registerWishlistCallbacks() in AuthContext, (5) Session ID management - Proper transitions between guest and user sessions in AsyncStorage. Files Modified: AuthContext.tsx (added registration methods, modified login/logout to call merge/reset functions), CartContext.tsx (added useAuth import, merge/reset functions, registration effect), WishlistContext.tsx (parallel implementation to Cart). Backend: Leverages existing /api/cart/merge and /api/wishlist/merge endpoints. Error Handling: All operations wrapped in try-catch to prevent auth failures. Documentation: Created CART_WISHLIST_SESSION_MIGRATION_COMPLETE.md (comprehensive implementation guide with flow diagrams, testing checklist, 400+ lines). Impact: Users no longer lose cart/wishlist items on login, data properly cleared on logout, each guest session is unique and isolated, backend cleanup of orphaned guest data. Mobile app now 92% complete with robust session management.
+
+0.6.1 (2026-01-18): BUY NOW CHECKOUT & ORDER MANAGEMENT UI - Implemented complete Buy Now flow enabling guest users to purchase single products without adding to cart. Backend: OrdersService.checkoutFromCart() now handles empty cart by falling back to payload.items (createOrderFromItems helper method), calculates totals from item data, generates CNF-TEST-/CNF- order numbers based on environment, creates orders directly from checkout payload with proper pricing/shipping/tax. PaymentScreen updated to send single-item payload for Buy Now transactions. Mobile Screens Added: (1) OrderSuccessScreen - Order confirmation with green checkmark, order summary (number, transaction ID, payment status, date), item list with quantities and prices, shipping address, price breakdown (subtotal, shipping, tax, total), expected delivery date calculator, Continue Shopping and View Orders buttons, (2) OrderDetailsScreen - Full order information with status icon/color, order info card with wrapped text for long order numbers, items list, shipping address, price details, help section, (3) OrdersScreen - Order listing with search bar, status filters (All/Pending/Processing/Confirmed/Shipped/Delivered/Cancelled), order cards with badges, item counts, totals, View Details navigation. UI Polish: Wrapped order numbers in info rows to prevent overflow using flex layouts with right-aligned text wrapping, reduced status filter chip height (from 50px to 46px) with tighter padding for cleaner appearance, responsive layouts throughout. Files Modified: orders.service.ts (added createOrderFromItems private method with DeepPartial typing, items fallback logic), PaymentScreen.tsx (payload.items for Buy Now), OrderSuccessScreen.tsx + OrderDetailsScreen.tsx + OrdersScreen.tsx (complete implementations). Impact: Guest users can complete purchases via Buy Now without cart, orders display properly in mobile app with professional UI, long order IDs wrap correctly, status filters are compact and touch-friendly. Mobile app now 95% complete with full order management.
+
+================================================================================
+--------------------------------------------------------------------------------
+A. ER Diagram (TBD) | B. API Endpoint Catalog (TBD) | C. Event Matrix (TBD) | D. Design Tokens (TBD) | E. Accessibility Checklist (TBD) | F. Brand Style Guide (TBD)
+
+================================================================================
+NEXT ACTIONS
+--------------------------------------------------------------------------------
+✓ Brand validated: Country Natural Foods
+✓ Stack approved: Next.js + NestJS + React Native + PostgreSQL + Docker
+✓ Monorepo scaffolded with all 3 apps (web, api, mobile)
+✓ Database entities created and seeded with sample products
+✓ API endpoints operational: /products, /products/:slug, /categories, /categories/:slug
+✓ Homepage completed with new branding and API integration
+✓ Featured products and categories displaying from database
+✓ Dynamic UI components: Animated Hero, CountdownBar (urgency), PressStrip, Testimonials carousel
+✓ Scroll reveal animations and micro-interactions
+✓ Product listing, detail, and category pages implemented
+✓ External image hosting enabled
+✓ Shopping cart backend and frontend fully functional
+✓ Mini-cart slide-over with quantity controls
+✓ Session-based cart with persistence
+✓ Toast notifications for all cart actions
+✓ Sticky CTA bar on product detail pages
+✓ Checkout page with 2-step flow (shipping → payment)
+✓ Order entities and API endpoints operational
+✓ Order placement functionality complete
+✓ Order confirmation page with full details
+✓ Product weight/variant selection (250g, 500g, 1kg, 2kg)
+✓ Variant price multipliers and calculations
+✓ Cart variant support throughout application
+✓ Full cart page with order summary
+✓ Currency converted to INR (₹) across all pages
+✓ Product prices updated in database to INR
+✓ Navigation improvements with back buttons
+✓ Complete order flow: Browse → Add to cart → Checkout → Order placed → Confirmation
+
+MOBILE: Completed so far
+- App shell with navigation stack (Home, Products, ProductDetail, About)
+- Home screen with brand alignment and dynamic product feed
+- Product list and detail screens fetching from API
+- Cart context for local state management
+- Basic theming using brand colors and linear gradient
+
+IMMEDIATE NEXT TASK (PRIORITY):
+- [x] FIX: Update free shipping threshold logic to use INR instead of USD
+  - Current: Free shipping at $49 (incorrect for INR prices)
+  - Required: Update to ₹4000 threshold (or appropriate INR amount)
+  - Affected files: apps/web/src/app/checkout/page.tsx, apps/web/src/app/cart/page.tsx, apps/web/src/components/MiniCart.tsx
+  - Backend: apps/api/src/orders/orders.service.ts (shipping calculation)
+  - Status: ✅ COMPLETED - All USD amounts converted to INR (₹4000 threshold, ₹500 shipping cost)
+
+CURRENT SPRINT:
+- [ ] Implement user authentication and account management
+- [ ] Add product search with OpenSearch integration
+- [ ] Implement wishlist functionality
+- [ ] Add real product images to public/ and swap emoji placeholders
+- [ ] Create shared types package for type safety across monorepo
+- [ ] Implement order tracking and history page
+- [ ] Add payment gateway integration (Razorpay for INR)
+- [ ] Implement mobile screens mirroring web functionality (cart and checkout flows next)
+
+================================================================================
+DATABASE SCHEMA (E‑COMMERCE CORE)
+================================================================================
+
+Entities and key fields (aligned with Product Card spec and homepage needs):
+
+1) Categories
+- id (PK, UUID)
+- name (VARCHAR 80)
+- slug (VARCHAR 80, unique)
+- iconEmoji (VARCHAR 8, optional)
+- description (TEXT, optional)
+- createdAt (TIMESTAMP)
+- updatedAt (TIMESTAMP)
+
+2) Products
+- id (PK, UUID)
+- name (VARCHAR 120)
+- slug (VARCHAR 120, unique)
+- shortDescription (VARCHAR 100)
+- description (TEXT)
+- basePrice (DECIMAL(10,2))
+- stock (INT, default 0)
+- soldCount (INT, default 0)
+- averageRating (DECIMAL(2,1), default 0)
+- reviewCount (INT, default 0)
+- badges (JSON array of strings)
+- categoryId (FK → Categories.id)
+- createdAt (TIMESTAMP)
+- updatedAt (TIMESTAMP)
+
+3) ProductVariants
+- id (PK, UUID)
+- productId (FK → Products.id) - REQUIRED
+- productName (VARCHAR, REQUIRED) - Product name denormalized for easy reference
+- weight (VARCHAR 50, e.g., "500ML", "1000G") - Renamed from `name` for clarity
+- price (DECIMAL(10,2))
+- discountPrice (DECIMAL(10,2), nullable) ← Renamed from compareAtPrice
+- discount (INT, percentage, e.g., 12 for 12%)
+- offer (TEXT, e.g., "Save ₹40!")
+- sku (VARCHAR 100, unique)
+- stockQuantity (INT, default 0)
+- lowStockThreshold (INT, default 10)
+- shelfLife (VARCHAR 50, e.g., "180 DAYS")
+- rating (DECIMAL(2,1), default 0) ← Variant-specific
+- reviewCount (INT, default 0) ← Variant-specific
+- isDefault (BOOLEAN, default false) - Marks the default variant for a product
+- isActive (BOOLEAN, default true)
+- createdAt (TIMESTAMP)
+- updatedAt (TIMESTAMP)
+
+3) ProductImages
+- id (PK, UUID)
+- productId (FK → Products.id)
+- url (VARCHAR 255)
+- altText (VARCHAR 255)
+- position (INT, default 0)
+
+4) Reviews (Phase 3)
+- id (PK, UUID)
+- productId (FK → Products.id)
+- customerName (VARCHAR 80)
+- rating (INT 1-5)
+- reviewText (TEXT)
+- verifiedPurchase (BOOLEAN)
+- createdAt (TIMESTAMP)
+
+5) Bundles (Phase 2)
+- id (PK, UUID)
+- name (VARCHAR 120)
+- slug (VARCHAR 120, unique)
+- description (TEXT)
+- image (VARCHAR 255)
+- individualTotal (DECIMAL(10,2))
+- bundlePrice (DECIMAL(10,2))
+- savingsPercent (INT)
+- products (M:N via bundles_products)
+
+API Contracts (homepage relevant):
+- GET /products?new=true&limit=6 → Latest Arrivals
+- GET /products?bestseller=true&sort=soldCount&limit=8 → Best Sellers
+- GET /products?category=soaps&limit=12 → Category filter
+- GET /categories → All categories for header & strip
+- GET /products/search/autocomplete?q= → name, image, price
+
+Display Mapping (transformProduct):
+- price ← variant.price (current selected variant)
+- discountPrice ← variant.discountPrice (variant-specific discount)
+- rating ← product.averageRating (aggregate across all variants)
+- reviewCount ← product.reviewCount (aggregate across all variants)
+- badges ← product.badges
+- image ← first ProductImages.url
+- altText ← first ProductImages.altText
+- stock ← product.stock
+- soldCount ← product.soldCount
+- discount ← variant.discount (percentage)
+
+================================================================================
+SAMPLE DATA PLAN (FOR DEVELOPMENT)
+================================================================================
+
+Categories (initial 8):
+- soaps (🧼) — Natural soaps & cleansing bars
+- skincare (🧴) — Face & body care
+- pantry (🍯) — Kitchen staples
+- haircare (💇) — Oils & shampoos
+- baby (👶) — Gentle care
+- home (🏠) — Household essentials
+- gifts (🎁) — Curated sets
+- sale (🔥) — Discounts
+
+Products (6–8 per category, highlights):
+- soaps: Wild Turmeric Soap, Neem Purify Bar, Rose Hydration Bar, Activated Charcoal Detox, Coconut Milk Gentle Cleanse, Lavender Calm Bar
+- skincare: Aloe Soothe Gel, Rosehip Face Oil, Turmeric Brightening Mask, Green Tea Toner, Shea Butter Body Cream, Honey Lip Balm
+- pantry: Organic Quinoa 500g, Almond Butter, Cold-Pressed Coconut Oil, Raw Forest Honey, Whole Wheat Flour (Stone‑ground), Masoor Dal
+- haircare: Bhringraj Hair Oil, Coconut Hair Serum, Hibiscus Strengthening Pack, Anti‑Frizz Shampoo, Neem Scalp Tonic
+- baby: Baby Gentle Soap, Baby Almond Oil, Baby Powder (Cornstarch), Baby Rash Cream, Baby Massage Gel
+- home: Herbal Surface Cleaner, Natural Laundry Liquid, Room Freshener (Citrus), Compostable Scrub Pads
+- gifts: Daily Cleanse Kit, Skincare Starter Pack, Pantry Essentials Box
+- sale: Dynamic mapping from products with compareAtPrice
+
+Data requirements per product:
+- images (1–3), altText including ingredient + use
+- badges: ["Organic", "Vegan", "Low Waste", "New", "Best Seller"] (subset per product)
+- stock: realistic values (0–200); low stock < 10
+- compareAtPrice: add for ~30% of products to show “Sale” badge
+- soldCount: vary to enable best seller ranking
+- rating/reviewCount: seed realistic averages (4.3–4.9, 12–500)
+
+Note: Seed script `apps/api/src/database/seed.ts` will populate the above for local/dev environments.
+
+================================================================================
+HOMEPAGE SPECIFICATION - COMPREHENSIVE UX/UI REQUIREMENTS
+================================================================================
+
+SECTION 1: GLOBAL HEADER (Sticky)
+----------------------------------
+Purpose: Immediate brand recognition, trust signals, and fast navigation to search/cart/account.
+
+Components:
+A. Top Utility Bar (small, dismissible):
+   - Content: "Free shipping on orders ₹1,499+ • 30-day returns • 24/7 support"
+   - Right side: Currency selector (₹ INR), Language toggle (if multi-lang)
+   - Height: ~32px, background: light green (#E8F5E9)
+   
+B. Main Header (sticky on scroll):
+   - Logo (left): Link to home, max height 48px
+   - Primary Navigation (center):
+     * Shop ▸ (dropdown: All Categories, Soaps, Skincare, Pantry, Haircare, Baby, Home, Gifts)
+     * Best Sellers
+     * New Arrivals
+     * Bundles
+     * Sustainability
+     * Recipes & Tips
+     * About
+   - Search Bar (center-right):
+     * Autocomplete with product/ingredient suggestions
+     * Keyboard shortcut: "/" to focus
+     * Show: product image, name, price in dropdown
+   - Right Icons:
+     * Wishlist (heart icon + count badge)
+     * Cart (bag icon + count badge + mini dropdown preview on hover)
+     * Profile/Login (user icon)
+   - CTA Button (desktop only): "Shop Best Sellers" - primary green
+   - Mobile: Hamburger menu, search icon, cart icon
+   
+Technical:
+- Max height: 72px (desktop), 56px (mobile)
+- z-index: 1000 for sticky behavior
+- Accessibility: aria-labels, keyboard focus styles, skip-to-content link
+- Performance: Skeleton loaders for cart count, lazy-load dropdown categories
+
+SECTION 2: HERO - FULL SCREEN (First Fold)
+-------------------------------------------
+Purpose: Emotional brand connection + immediate conversion with primary CTA.
+
+Layout:
+- Desktop: Two-column (50/50) - left text, right imagery
+- Mobile: Stacked - text first, then image
+
+Left Column (Text):
+- Eyebrow text: "Certified Organic Since 2020" (small, green)
+- Main Headline (H1, 48-60px):
+  "Pure. Potent. Proven. — 100% Certified Organic Essentials for Everyday Wellness."
+- Subheadline (20px, gray):
+  "From farm to shelf — clean ingredients, regenerative farms, and packaging that breathes."
+- CTA Buttons (row):
+  * Primary: "Shop Curated Starters" (large, green button, 56px height)
+  * Secondary: "See Certifications" (outline button)
+- Trust Row (small icons, 32px each):
+  * USDA Organic | India Organic | Cruelty-Free | Recyclable Packaging | Secure Checkout
+- Urgency Microcopy (below CTAs, orange text):
+  "Limited batch: New Wild Turmeric Soap — only 200 bars this week."
+
+Right Column (Visual):
+- Hero Carousel (3 slides, auto-rotate 5s, manual controls):
+  1. Lifestyle photo: Family using products
+  2. Product cluster: 5-6 hero products arranged artistically
+  3. Sustainability shot: Farm/packaging process
+- Dimensions: 600x700px min, aspect ratio 6:7
+
+Technical:
+- Lazy-load hero images (except first slide)
+- Prefetch product page on CTA hover
+- LCP optimization: hero image priority load, AVIF/WebP format
+- Animation: Fade transition between carousel slides
+
+SECTION 3: VALUE PROPOSITION CARDS (3 Inline)
+----------------------------------------------
+Purpose: Quick trust-building benefits before users scroll.
+
+Layout: Horizontal row (desktop), stacked (mobile), ~300px width each
+
+Cards:
+1. Clean Ingredients
+   Icon: Leaf checkmark (48px, green)
+   Headline: "Clean Ingredients"
+   Copy: "No synthetics, no fillers. Full ingredient lists & sourcing per product."
+   CTA: "Learn more →" (anchor link)
+
+2. Farm-to-Shelf Traceability
+   Icon: QR code scanner (48px)
+   Headline: "Farm-to-Shelf Traceability"
+   Copy: "Scan QR on packaging to meet the farmer."
+   CTA: "How it works →"
+
+3. Satisfaction Guarantee
+   Icon: Shield with checkmark (48px)
+   Headline: "30-Day Money-Back"
+   Copy: "No questions asked returns."
+   CTA: "View policy →"
+
+Design: White background, 16px padding, subtle shadow, hover lift effect
+
+SECTION 4: PRIMARY SHOP MODULES
+--------------------------------
+
+A. LATEST ARRIVALS (Carousel/Grid)
+Title: "New This Week"
+Subtitle: "Fresh from the farm — limited batches available"
+
+Display: 6 product cards
+- Horizontal scroll (mobile)
+- Grid 2x3 or 3x2 (desktop)
+- "View all →" button at end
+
+Product Card Structure:
+- Image (square, 1:1 aspect ratio, hover zoom)
+- Badges: "New", "Organic", "Best for [use]"
+- Product Name (2 lines max, ellipsis)
+- Short Description: "Wild Turmeric Soap — Soothing • Antioxidant • Cold-pressed oils"
+- Price: ₹XXX (strikethrough compare-at-price if discounted)
+- Rating: Stars + count (4.8 ★ • 234 reviews)
+- Quick Actions (on hover/tap):
+  * Add to Cart (button)
+  * Quick View (eye icon)
+  * Save to Wishlist (heart icon)
+
+B. BEST SELLERS (Social Proof + Scarcity)
+Title: "Most Loved by Our Community"
+Subtitle: "Top picks from 20,000+ happy customers"
+
+Display: 4-8 product cards (grid)
+
+Enhanced Product Card Elements:
+- "5,200 sold" badge
+- Customer review quote: "This changed my skin!" — Priya M.
+- Rating with verified badge
+- Limited stock indicator: "Only 8 left!" (red text, for select products)
+
+C. BUNDLES & STARTER PACKS
+Title: "Start Clean — Bundles that Save"
+
+Display: 3 bundle cards (horizontal row)
+
+Bundle Card Structure:
+- Bundle image (showing all products)
+- Bundle name: "Daily Cleanse Kit"
+- Products included: List of 4-5 items
+- Individual total: ₹1,499
+- Bundle price: ₹1,199 (20% savings, green text)
+- CTA: "Buy Bundle — Save 18%" (button)
+
+SECTION 5: CATEGORY STRIP + QUICK FILTERS
+-----------------------------------------
+Purpose: Immediate category navigation without page reload.
+
+Row 1 - Category Pills (icon + label):
+🧼 Soaps | 🧴 Skincare | 🍯 Pantry | 💇 Haircare | 👶 Baby | 🏠 Home | 🎁 Gifts | 🔥 Sale
+
+Row 2 - Filter Pills (smaller):
+Organic • Low Waste • Vegan • For Sensitive Skin • Locally Sourced
+
+Interaction:
+- Click category → load category page with instant filters
+- Support deep linking for UTM tracking
+- Active state: filled green background
+
+SECTION 6: SPOTLIGHT FEATURE (Longcard)
+---------------------------------------
+Purpose: Deep storytelling for hero product/brand message.
+
+Layout: Horizontal card with left/right split (reverse on mobile)
+
+Left Side:
+- Large product image: Wild Turmeric Soap in traditional setting
+- Optional: Small video play button (45-60s video lightbox)
+
+Right Side:
+- Eyebrow: "From Rayalaseema Fields"
+- Headline: "Wild Turmeric Soap"
+- Story bullets:
+  * ✓ Ethically wild-harvested from Andhra Pradesh
+  * ✓ Cold-pressed coconut oil base
+  * ✓ Traditional sun-drying process
+- Price: ₹299 (compare ₹350)
+- CTAs:
+  * Primary: "Buy the Limited Batch"
+  * Secondary: "Read the Farmer's Story" (opens modal)
+
+Video Modal:
+- Farmer introduction
+- Harvesting process
+- Production to packaging
+
+SECTION 7: SOCIAL PROOF / UGC WALL
+----------------------------------
+Purpose: Build trust and FOMO via real customers.
+
+Components:
+
+A. Customer Review Carousel
+- Display: 4-5 cards horizontal scroll
+- Each card:
+  * Customer photo (circle)
+  * Name + "Verified Buyer" badge
+  * Rating (stars)
+  * Review text (3-4 lines)
+  * Product purchased (small thumbnail)
+  * Date
+
+B. "As Seen In" Logos
+- Row of press/media logos (if applicable)
+- Example: Times of India, Vogue, The Hindu
+
+C. Instagram UGC Grid
+- Title: "Share Your #PureWithUs Moments"
+- Display: 8-12 Instagram photos in grid
+- Each photo clickable → modal with product tags (shoppable)
+- CTA: "Follow @countrynatural" button
+
+Technical:
+- Lazy-load Instagram feed
+- Include moderation flag for inappropriate content
+- Cache feed for 1 hour
+
+SECTION 8: INGREDIENT TRANSPARENCY (Trust Block)
+-----------------------------------------------
+Purpose: Combat skepticism and build authority on organic claims.
+
+Layout: 4 horizontal tiles (icons + text + modal trigger)
+
+Tiles:
+1. Traceability
+   Icon: Map pin with checkmark
+   Headline: "Full Farm Traceability"
+   Copy: "Every batch linked to source farm. View origin map for each product."
+   CTA: "See example →" (modal with sample traceability report)
+
+2. Lab Reports
+   Icon: Microscope
+   Headline: "Third-Party Lab Tested"
+   Copy: "Every batch tested for pesticides, heavy metals, and contaminants."
+   CTA: "View sample report →" (PDF in modal)
+
+3. Certifications
+   Icon: Certificate seal
+   Headline: "Certified Organic"
+   Copy: "USDA Organic, India Organic, Cruelty-Free certified."
+   CTA: "See all certifications →" (page with full list + PDFs)
+
+4. Ingredient Database
+   Icon: Open book
+   Headline: "Know Every Ingredient"
+   Copy: "Search our database of 200+ ingredients with sourcing details."
+   CTA: "Browse ingredients →"
+
+SEO:
+- Include JSON-LD for certifications
+- Structured data for organization trust signals
+
+SECTION 9: SUSTAINABILITY & PACKAGING (Longcard)
+-----------------------------------------------
+Message Focus: Minimal waste, compostable packaging, carbon-neutral shipping.
+
+Layout: Left text, right infographic/illustration
+
+Left:
+- Headline: "Packaging That Returns to Earth"
+- Copy: "100% compostable packaging. Recyclable glass bottles. Carbon-neutral shipping options."
+- Bullet points:
+  * ♻️ Zero plastic in packaging
+  * 🌱 Compost our boxes in 90 days
+  * 🚚 Choose carbon-neutral shipping at checkout
+- CTA: "Calculate Your Order's Footprint"
+
+Right:
+- Illustrated diagram showing:
+  1. Product in compostable box
+  2. Box breaking down in compost
+  3. New plant growing
+
+Bottom:
+- Recycling instructions (expandable accordion)
+- "Download our packaging guide" (PDF link)
+
+SECTION 10: SUBSCRIPTION / AUTOSHIP CTA
+---------------------------------------
+Purpose: Increase LTV with recurring revenue.
+
+Card Layout:
+- Small card with toggle between purchase types
+- Headline: "Never Run Out — Save 10% with Autoship"
+- Toggle Options:
+  * One-time purchase (default)
+  * Subscribe & Save 10%
+    - Dropdown: Deliver every [30/60/90] days
+- Benefits list:
+  * 💰 Save 10% on every delivery
+  * 📦 Free shipping on subscriptions
+  * ⏸️ Skip or cancel anytime
+  * 🔄 Easy to manage in your account
+
+Technical:
+- Preselect subscription for consumables (soaps, pantry)
+- Store subscription tokens server-side
+- Integrate with Razorpay/Stripe recurring billing
+
+SECTION 11: EDUCATIONAL CONTENT BLOCK
+-------------------------------------
+Purpose: SEO boost + build authority + drive blog traffic.
+
+Title: "Learn More About Clean Living"
+
+Layout: 3 article tiles (horizontal cards)
+
+Each Tile:
+- Featured image
+- Category tag: "Skincare Tips", "Sustainability", "Meet the Farmers"
+- Headline: "How to Choose Organic Soap for Sensitive Skin"
+- Excerpt: 2 lines
+- Meta: Reading time (5 min read) • Author name
+- CTA: "Read article →"
+
+Featured Articles:
+1. "How to choose organic soap for sensitive skin"
+2. "5 ways to reduce kitchen waste with pantry staples"
+3. "Meet the farmers: The Siva family of Rayalaseema"
+
+Link: "View all articles →" button at end
+
+SECTION 12: LIMITED TIME BANNER (Urgency)
+-----------------------------------------
+Purpose: Create conversion urgency without being spammy.
+
+Design: Thin banner (60px height) spanning full width
+
+Content:
+- Left icon: ⚡ (lightning bolt)
+- Text: "Weekend Harvest Sale — Up to 20% off select pantry staples. Ends in 2 days."
+- Right: Countdown timer (48:23:15 format)
+- CTA: "Shop Sale →" button
+
+Placement: Above footer or floating at bottom of viewport
+
+A/B Test Variants:
+- "Limited Batch" vs "Limited Time" phrasing
+- Countdown vs date ("Ends Sunday 11:59 PM")
+
+SECTION 13: FAQ + SHIPPING ACCORDION
+------------------------------------
+Purpose: Remove last-minute purchase objections.
+
+Title: "Common Questions"
+
+Accordion FAQs (Top 6):
+1. What does "certified organic" mean?
+2. How long until I see results from skincare products?
+3. What's your return policy?
+4. How do I track my order?
+5. Are all ingredients listed? (Allergen info)
+6. How do I recycle/compost your packaging?
+
+Bottom Links:
+- "View all FAQs →"
+- "Contact support" (chat bubble)
+
+Design: Clean accordion with expand/collapse, one open at a time
+
+SECTION 14: NEWSLETTER SIGNUP
+-----------------------------
+Purpose: Capture emails with clear value exchange.
+
+Card Design: Centered, max-width 600px
+
+Headline: "Get 10% Off Your First Order"
+Subheadline: "Plus weekly tips on clean living, new product launches, and exclusive deals."
+
+Form:
+- Email input (large, placeholder: "your@email.com")
+- Checkbox: "Yes, send me product recommendations (unsubscribe anytime)"
+- Submit button: "Get My 10% Off"
+
+Fine Print: "We respect your privacy. Unsubscribe anytime. No spam."
+
+Technical:
+- Double opt-in flow
+- Tag source: homepage_footer
+- Send welcome email with 10% coupon code immediately
+
+SECTION 15: FOOTER (Comprehensive)
+----------------------------------
+Layout: 4-column grid (desktop), stacked (mobile)
+
+Column 1: Shop
+- All Products
+- Soaps
+- Skincare
+- Pantry
+- Haircare
+- Baby
+- Home
+- Gifts
+- Sale
+
+Column 2: About
+- Our Story
+- Certifications
+- Sustainability
+- Meet the Farmers
+- Press & Media
+- Careers
+
+Column 3: Help
+- FAQs
+- Shipping & Delivery
+- Returns & Refunds
+- Contact Us
+- Track Order
+- Size Guide
+
+Column 4: Legal & Social
+- Terms of Service
+- Privacy Policy
+- Accessibility Statement
+- Social icons: Instagram, Facebook, YouTube, Twitter
+- Newsletter signup (compact)
+
+Bottom Bar:
+- Payment method icons: Visa, Mastercard, Rupay, UPI, PayPal
+- Security badges: SSL Secure, PCI Compliant
+- Trust seals: Verified by Razorpay/Stripe
+- Copyright: © 2025 Country Natural Foods. All rights reserved.
+- Small sitemap links
+
+================================================================================
+CONVERSION MICROCOPY - EXACT PHRASES TO USE
+================================================================================
+
+Buttons & CTAs:
+- "Add to Cart — ₹XXX"
+- "Buy Now — Fast Checkout"
+- "Shop Bestsellers →"
+- "View Product Details"
+- "Quick View"
+- "Save to Wishlist"
+- "Buy Bundle — Save 18%"
+- "Subscribe & Save 10%"
+- "Calculate Shipping"
+
+Stock & Urgency:
+- "Only X left in stock"
+- "Selling fast — 8 sold in last hour"
+- "Limited batch — 200 available"
+- "Back in stock soon"
+- "Final sale — No returns"
+
+Trust & Reassurance:
+- "Free shipping on orders ₹1,499+"
+- "30-day money-back guarantee"
+- "Secure checkout • SSL encrypted"
+- "100% Certified Organic"
+- "Third-party lab tested"
+- "Ethically sourced"
+- "Compostable packaging"
+- "Carbon-neutral shipping available"
+
+Cart & Checkout:
+- "Your cart is empty — Start shopping"
+- "Saved for later"
+- "Secure checkout"
+- "Order summary"
+- "Apply coupon code"
+- "Free shipping unlocked!"
+- "Add ₹XXX more for free shipping"
+
+Email Subjects (Cart Abandonment):
+- "Your organic picks are waiting — Save 10%"
+- "Complete your order & get free shipping"
+- "Still thinking? Here's 10% off to help"
+
+Product Descriptions:
+- "Wild Turmeric Soap — Soothing • Antioxidant • Cold-pressed oils"
+- "Organic Kale Bunch — Fresh from Rayalaseema • Chemical-free"
+- "Almond Butter — 100% almonds • No sugar • Vegan"
+
+================================================================================
+PRODUCT CARD COMPONENT SPECIFICATION
+================================================================================
+
+Developer Fields:
+{
+  id: number
+  slug: string
+  name: string
+  shortDescription: string (1-6 words)
+  image: string (URL)
+  altText: string (must include ingredient + use: "Wild Turmeric Soap for glowing skin")
+  price: number
+  compareAtPrice: number | null
+  badges: string[] ("Organic", "Vegan", "Low Waste", "New", "Best Seller")
+  rating: number (decimal, e.g., 4.8)
+  reviewCount: number
+  stock: number | "low" | "out"
+  soldCount: number (for social proof)
+  quickActions: {
+    showAddToCart: boolean
+    showQuickView: boolean
+    showWishlist: boolean
+  }
+}
+
+Display Rules:
+- Show "Sale" badge if compareAtPrice exists
+- Show "Low Stock" if stock < 10
+- Show "X sold" if soldCount > 100
+- Disable "Add to Cart" if stock === "out" or stock === 0
+
+Hover States:
+- Image: Zoom 1.05x
+- Card: Lift shadow
+- Quick actions: Fade in buttons
+
+Accessibility:
+- Alt text must include primary ingredient + intended use
+- Button labels: "Add [Product Name] to cart"
+- Keyboard navigable
+- Focus indicators
+
+================================================================================
+SEO & TECHNICAL REQUIREMENTS
+================================================================================
+
+Page Meta:
+- Title: "Country Natural Foods — Certified Organic Soaps, Skincare & Pantry | Free Shipping ₹1,499+"
+- Description (150-160 chars): "Buy 100% certified organic soaps, skincare, and pantry essentials. Lab-tested, farm-to-shelf traceability. Free shipping over ₹1,499. Shop now!"
+- Keywords: organic products India, certified organic soap, natural skincare, organic pantry
+
+JSON-LD Structured Data:
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Country Natural Foods",
+  "url": "https://countrynatural.com",
+  "logo": "https://countrynatural.com/logo.png",
+  "sameAs": [
+    "https://instagram.com/countrynatural",
+    "https://facebook.com/countrynatural"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+91-XXX-XXXX",
+    "contactType": "Customer Service"
+  }
+}
+
+Additional Schemas:
+- Product (for each product card)
+- AggregateRating (for review sections)
+- BreadcrumbList (for navigation)
+- LocalBusiness (if physical store)
+
+Open Graph:
+- og:title, og:description, og:image (hero image)
+- og:type: website
+- Twitter Card: summary_large_image
+
+Performance:
+- LCP target: < 1.8s
+- Hero image: AVIF/WebP, priority load
+- Lazy load: All below-fold images
+- Critical CSS: Inline for header + hero
+- Prefetch: Product pages on card hover
+- CDN: Image optimization and delivery
+
+================================================================================
+ANALYTICS & TRACKING EVENTS
+================================================================================
+
+Key Events to Track:
+1. Homepage loaded
+2. Hero CTA clicked (button label as property)
+3. Product card clicked (product ID, position)
+4. Add to cart from homepage
+5. Category chip clicked
+6. Bundle clicked
+7. UGC image clicked
+8. Newsletter signup submitted
+9. Scroll depth (25%, 50%, 75%, 100%)
+10. Video played (Spotlight section)
+11. FAQ expanded
+12. Urgency banner CTA clicked
+
+Conversion Metrics:
+- Homepage → Product page CTR
+- Homepage → Add to cart rate
+- Subscription toggle rate
+- Bounce rate by section
+- Time on page
+- Scroll depth vs bounce correlation
+
+A/B Tests:
+1. Hero headline variant A vs B
+2. Bundle placement (above vs below reviews)
+3. Urgency banner text
+4. CTA button color (green vs orange)
+5. Countdown timer vs static date
+
+================================================================================
+IMPLEMENTATION PRIORITY & PHASING
+================================================================================
+
+MVP - Phase 1 (Ship in Sprint 1-2):
+✓ Header (sticky, search, cart, nav)
+✓ Hero section (headline, CTAs, carousel, trust badges)
+✓ Latest Arrivals (product grid/carousel)
+✓ Best Sellers (product grid)
+✓ Product Card component (full spec)
+✓ Trust badges row
+✓ Footer (comprehensive)
+✓ Meta tags & SEO basics
+✓ Mobile responsive
+✓ Cart integration
+✓ Basic analytics events
+
+Phase 2 (Sprint 3-4):
+- Bundles section
+- Subscription/Autoship component
+- UGC feed (Instagram API)
+- Video lightbox (Spotlight)
+- Category strip with filters
+- FAQ accordion
+- Newsletter signup
+- Product quick view modal
+
+Phase 3 (Sprint 5-6):
+- Social proof carousel
+- Ingredient transparency modals
+- Sustainability longcard
+- Educational content tiles
+- Limited time banner with countdown
+- Advanced analytics
+- A/B testing setup
+
+Phase 4 (Optimization):
+- Full traceability QR system
+- Carbon footprint calculator
+- Advanced personalization
+- Loyalty program integration
+- Performance tuning
+- Accessibility audit
+
+================================================================================
+VISUAL LAYOUT ORDER (Top to Bottom)
+================================================================================
+
+1. Top Utility Bar
+2. Sticky Header (logo, nav, search, cart)
+3. Hero (headline + CTAs + carousel + trust badges)
+4. Value Proposition Cards (3 inline)
+5. Latest Arrivals (carousel/grid)
+6. Best Sellers (grid + reviews)
+7. Bundles & Starter Packs
+8. Category Strip + Quick Filters
+9. Spotlight Product Story (longcard with video)
+10. Social Proof / UGC Wall
+11. Ingredient Transparency / Certifications (4 tiles)
+12. Sustainability & Packaging (longcard)
+13. Subscription / Autoship CTA
+14. Educational Content Block (3 article tiles)
+15. Limited Time Banner / Countdown
+16. FAQ Accordion
+17. Newsletter Signup
+18. Footer (comprehensive)
+
+================================================================================
+END OF HOMEPAGE SPECIFICATION
+================================================================================
+
+================================================================================
+COUNTRY NATURAL FOODS FARM (CNFF) DATA INTEGRATION
+================================================================================
+
+Status: SEEDING COMPLETED (Phase 1 - Sample Data)
+Date: 2025-12-04
+
+Seeded Products (5 sample):
+- Groundnut Oil (2 variants: 1000ML @₹410, 500ML @₹220) → Cold Pressed Oils
+- Coconut Oil (2 variants: 1000ML @₹800, 500ML @₹400) → Cold Pressed Oils
+- Organic Jaggery Powder (2 variants: 1000G @₹180, 500G @₹90) → Jaggery Varieties
+- Turmeric Powder (1 variant: 500G @₹140) → Desi Grocery
+- Wild Turmeric Soap (1 variant: 100G @₹110) → Homemade Soaps
+
+Total Variants Seeded: 8
+Total Categories: 6 (Cold Pressed Oils, Jaggery Varieties, Homemade Ghee, Organic Millets, Desi Grocery, Homemade Soaps)
+
+Seeding Function Location: apps/api/src/database/seed-cnf.ts
+
+Database Schema Updates:
+- Added `shelfLife: string` column to Product entity (stores shelf life like "180 DAYS", "365 DAYS", "24 MONTHS")
+- Added `weight: string` column to ProductVariant entity (stores variant size/weight like "500ML", "1000G")
+- Both fields support proper variant management for grocery/food products with multiple size options
+
+Image Management Strategy (Cloud Storage - Approach 1 MinIO/S3):
+- Product images stored in cloud storage (MinIO, AWS S3, or Cloudinary)
+- Database stores image URLs as array: images: string[]
+- Currently using Unsplash placeholder images for rapid development
+- Production Migration:
+  * Set up MinIO/S3 bucket with CDN/CloudFront integration
+  * Upload actual CNF product photos to cloud storage
+  * Update seed-cnf.ts with production image URLs
+  * Implement image management admin panel for future product uploads
+
+Future Expansion to Full CNF Catalog:
+- Total Products: 48 (from CNF pricing list)
+- Total Variants: 145+ (various sizes, weights, quantities)
+- Categories: 17 (Oils, Jaggery, Ghee, Millets, Dals, Flours, Seeds, Spices, Soaps, Sweets, etc.)
+- Target Completion: Post-MVP
+- Process: Expand productsData array in seed-cnf.ts with complete product list and re-run pnpm seed
+
+Production Deployment Checklist - CNF Data:
+Before deploying to production:
+☐ Replace all Unsplash image URLs with actual CNF product photography URLs from cloud storage
+☐ Verify all 145 variants seeded successfully: SELECT COUNT(*) FROM product_variants;
+☐ Test variant selector on web and mobile with real prices and weights
+☐ Configure cloud storage credentials (MinIO/S3 bucket access keys, CloudFront domain)
+☐ Set up image CDN with proper caching headers and 301 redirects
+☐ Validate shelf life data for all products (display on product detail)
+☐ Test weight/size information displays correctly on product cards and detail pages
+☐ Implement random selection for "New Arrivals" and "Best Sellers" badges (currently seeded with isFeatured flag)
+☐ Add product review seeding if required
+☐ Set up automated image optimization pipeline (WebP/AVIF conversion)
+
+================================================================================
+ACTION ITEMS & TECHNICAL DEBT
+================================================================================
+
+1. [API] Expand CNF Product Seed Data
+   Status: 5/48 Products seeded (Sample phase complete)
+   Location: apps/api/src/database/seed-cnf.ts
+   Current: Sample products for testing (Groundnut Oil, Coconut Oil, Jaggery Powder, Turmeric Powder, Turmeric Soap)
+   Required Action:
+   - Add remaining 43 products from complete CNF pricing list
+   - Implement variants with proper weight/size information (500ML, 1000G, etc.)
+   - Add shelf life data for each product
+   - Run pnpm seed to populate 145+ variants
+   - Verify database integrity
+   Priority: High
+   Target: Phase 2 completion
+   Effort: 4-6 hours (data entry + testing)
+
+2. [CLOUD] Set Up Image Storage & CDN
+   Status: Placeholder images only (Unsplash)
+   Location: apps/api/src/database/seed-cnf.ts, Product entity images array
+   Current: Using Unsplash URLs for rapid development
+   Required Action:
+   - Set up MinIO (local) or AWS S3 bucket (cloud)
+   - Configure CDN (CloudFront for S3 or MinIO front-facing CDN)
+   - Implement image upload workflow (admin panel)
+   - Update seed-cnf.ts with production image URLs
+   - Set up automated image optimization (resize, WebP/AVIF conversion)
+   Priority: High
+   Target: Before production launch
+   Effort: 6-8 hours (infrastructure setup)
+
+3. [MOBILE] Footer Contact Information - Database Migration
+   Status: Hardcoded
+   Location: apps/mobile/components/Footer.tsx
+   Current: Office address, phone (+91 80 1234 5678), email (info@countrynatural.in) are hardcoded
+   Required Action: 
+   - Create SiteSettings entity for contact information
+   - Add API endpoint to fetch site settings
+   - Update Footer component to fetch from API
+   - Add admin panel to manage contact information
+   Priority: Medium
+   Target: Phase 3 - Mobile Apps completion
+
+2. [MOBILE] CategoryGrid Images - Production Assets
+   Status: Using Unsplash placeholder images
+   Location: apps/api/src/database/seed.ts, apps/mobile/components/CategoryGrid.tsx
+   Current: 8 categories using Unsplash URLs (soaps, skincare, pantry, haircare, baby, home, gifts, sale)
+   Required Action:
+   - Replace with professional product photography or branded category images
+   - Optimize images for mobile (WebP/AVIF formats, multiple resolutions)
+   - Upload to CDN or MinIO storage
+   - Update seed.ts with production image URLs
+   Priority: High
+   Target: Before production launch
+
+3. [MOBILE] HeroCarousel Content - CMS Integration
+   Status: Hardcoded carousel slides
+   Location: apps/mobile/components/HeroCarousel.tsx
+   Current: 4 slides with Unsplash images and static text (Farm Fresh Daily, Nourish Your Family, Pure Ingredients, Sustainable Living)
+   Required Action:
+   - Create Banner/Promotion entity for carousel content
+   - Add API endpoint to fetch active banners
+   - Update HeroCarousel to fetch slides from API
+   - Add admin panel to manage carousel content (image, title, subtitle, link, active status, display order)
+   Priority: High
+   Target: Phase 3 - Mobile Apps completion
+
+4. [API] ProductRepository Query Optimization
+   Status: Functional, needs performance tuning
+   Location: apps/api/src/products/product.repository.ts
+   Current: Uses leftJoinAndSelect for variants/categories/certifications on all queries
+   Required Action:
+   - Add query performance monitoring
+   - Consider selective loading of relations based on endpoint needs
+   - Add database indexes for common filters (newest, bestseller, featured)
+   - Implement query result caching for homepage/listing pages
+   Priority: Medium
+   Target: Phase 4 - Optimization
+
+================================================================================
+27. ADVANCED VARIANT MANAGEMENT SYSTEM (New - v0.4.0)
+================================================================================
+
+OVERVIEW
+--------
+The variant management system enables complete flexibility per product variant:
+- Independent pricing & discounts per variant
+- Per-variant shelf-life information
+- Stock management per variant with low-stock thresholds
+- Variant-specific ratings & reviews
+- Out-of-stock notifications from users
+- User view tracking (24-hour rolling window, per-user)
+- Default variant marking (one variant per product marked as default for display)
+
+USE CASES
+---------
+1. Discount Only One Variant:
+   500ML Coconut Oil: ₹400 (12% off from ₹450) vs 1000ML: ₹800 (10% off from ₹900)
+
+2. Stock Per Variant:
+   500ML (20 units in stock) vs 1000ML (out of stock) → Shows both, grays out OOS variant
+
+3. Shelf-Life Variations:
+   Flaxseed Oil 500ML: 90 DAYS vs standard items: 180 DAYS
+
+4. Variant-Specific Ratings:
+   Groundnut Oil 500ML: 4.6★ (38 reviews) vs 1000ML: 4.5★ (24 reviews)
+
+5. Best Seller & Latest Arrival:
+   Product-level flags (isBestSeller, isLatestArrival) auto-populate UI sections
+
+6. Default Variant Display:
+   500ML marked as isDefault=true → Shows on homepage, category pages, and product listings
+   1000ML marked as isDefault=false → Available in product detail but not featured
+
+7. Product Attributes:
+   Custom tags: ["Organic", "Cold-Pressed", "Non-GMO"], displayed below name
+
+DATABASE SCHEMA (TypeORM Entities) - IMPLEMENTED IN v0.4.0
+----------
+ProductImage, ProductAttribute, ProductView, StockNotification entities created.
+Product & ProductVariant enhanced with new fields.
+
+KEY FIELDS IN PRODUCTVARIANT:
+- price, compareAtPrice, discount (%), offer (text)
+- sku, stockQuantity, lowStockThreshold, shelfLife
+- rating (variant-specific), reviewCount (variant-specific)
+- isDefault (boolean) - marks the default variant for product display
+- views (O-M relation to ProductView)
+- stockNotifications (O-M relation to StockNotification)
+
+KEY FIELDS IN PRODUCT:
+- isBestSeller, isLatestArrival (boolean flags)
+- images (O-M relation to ProductImage, ordered by displayOrder)
+- attributes (O-M relation to ProductAttribute)
+
+API ROADMAP (To Be Implemented in v0.5.0)
+----------
+GET /best-sellers                  - Products with isBestSeller = true
+GET /latest-arrivals               - Products with isLatestArrival = true
+GET /products/:slug/images         - All product images
+POST /products/:id/view            - Track user view
+POST /products/:id/stock-notify    - Create out-of-stock notification
+PATCH /products/:id/variants/:vid  - Update variant price/discount/stock
+
+ADMIN FEATURES ROADMAP (v0.5.0+)
+----------
+- Product image upload & gallery management
+- Variant editor (price, discount, stock, shelf-life)
+- Stock notification dashboard
+- View tracking analytics
+- Toggle isBestSeller/isLatestArrival flags
+
+================================================================================
+27. ADMIN PORTAL SPECIFICATION (v0.5.0+) - COMPREHENSIVE DESIGN
+================================================================================
+
+EXECUTIVE SUMMARY
+-----------------
+The Admin Portal is a comprehensive content management system for Country Natural Foods administrators.
+Platform: Web-first (Next.js) with mobile companion (React Native) using SHARED API client & types.
+Authentication: JWT-based with role-based access control (SUPER_ADMIN, ADMIN, MANAGER, VIEWER).
+Database: Shared with customer-facing app (PostgreSQL).
+API: Shared with customer-facing app (NestJS).
+
+KEY FEATURES:
+1. Product Management (Create, Edit, Delete, Bulk Operations)
+2. Variant Management (Price, Discount, Stock, Shelf-life per variant)
+3. Image Management (Multi-image upload, drag-to-reorder, set default, preview)
+4. Category Management (CRUD, reorder for homepage display)
+5. Stock & Inventory Tracking (Real-time levels, low-stock alerts)
+6. Analytics & Reporting (Sales, products, inventory, customer metrics)
+7. Site Settings & Configuration (Shipping, notifications, display settings)
+8. User Management (Admin account management, roles, permissions)
+
+---
+
+PROPOSED IMPLEMENTATION APPROACH
+---------------------------------
+
+ARCHITECTURE DECISION: Shared Code for Web + Mobile Admin
+
+✅ PROS:
+- Single source of truth for business logic (forms, validations, API calls)
+- Faster mobile development (reuse API client, types, services)
+- Consistent UX across platforms
+- Less code duplication & maintenance burden
+- Easier to scale
+
+❌ CONS:
+- Different UI frameworks (React Web vs React Native)
+- Different component libraries needed
+- Navigation paradigms differ (routing vs stack)
+- Screen sizes vary significantly
+- Performance constraints differ
+
+✅ RECOMMENDED SOLUTION: Monorepo with Shared Logic, Platform-Specific UI
+
+Directory Structure:
+```
+/apps/admin-web                    (Next.js, desktop-first)
+/apps/admin-mobile                 (React Native, mobile-first)
+/packages/admin-types              (TypeScript interfaces - SHARED)
+/packages/admin-api-client         (HTTP client, auth logic - SHARED)
+/packages/admin-services           (Business logic & validation - SHARED)
+/packages/ui-web                   (Tailwind + Shadcn components)
+/packages/ui-mobile                (React Native components)
+```
+
+WHAT GETS SHARED:
+1. Admin API Client (/packages/admin-api-client):
+   - HTTP methods for all endpoints (products, variants, images, categories, etc.)
+   - Token management & refresh logic
+   - Error handling & retry logic
+   - Works identically in both web and mobile
+
+2. TypeScript Interfaces (/packages/admin-types):
+   - Product, Variant, Category, Order, AdminUser types
+   - API request/response shapes
+   - Enum definitions (roles, statuses)
+
+3. Business Logic (/packages/admin-services):
+   - Product form validation (Zod schemas)
+   - Price calculations (discount % from discountPrice)
+   - Image ordering logic
+   - Stock status determination
+
+WHAT STAYS SEPARATE:
+1. UI Components (platform-specific):
+   - Web: Next.js pages, Tailwind CSS, Shadcn/ui, desktop layouts
+   - Mobile: React Native screens, native components, stack navigation
+
+2. Routing/Navigation:
+   - Web: Next.js file-based routing
+   - Mobile: React Navigation stack
+
+3. Styling:
+   - Web: Tailwind CSS + CSS modules
+   - Mobile: React Native StyleSheet
+
+---
+
+RECOMMENDED PROGRESSION
+-----------------------
+
+**Phase 1: Admin Web Portal (Your Priority - 4 weeks)**
+- Why: You have images on laptop, easier to manage via desktop
+- Deliverable: Full-featured admin dashboard accessible via laptop/browser
+- Tech: Next.js 14, Tailwind, Shadcn/ui, React Hook Form
+
+**Phase 2: Shared Packages Setup (Parallel, 1 week)**
+- Extract shared code into /packages/admin-api-client, /packages/admin-types, /packages/admin-services
+- This prepares foundation for mobile admin app
+
+**Phase 3: Admin Mobile App (Optional, Later - 3 weeks)**
+- Reuse shared packages from Phase 2
+- Build mobile-optimized screens with React Native
+- Focus on quick actions: view dashboard, check stock, upload images (single file mode)
+
+TIMELINE: Web Admin (4 weeks) → Shared Packages (1 week overlap) → Mobile Admin (3 weeks if wanted)
+
+---
+
+DETAILED FEATURE BREAKDOWN
+--------------------------
+
+### 1. AUTHENTICATION & LOGIN
+Route: /admin/login
+Features:
+- Email + password form
+- JWT token storage in httpOnly cookie
+- Refresh token mechanism
+- Logout functionality
+- "Remember me" option (optional)
+- Password reset flow (future)
+
+API Endpoints:
+  POST /api/admin/auth/login → { accessToken, refreshToken }
+  POST /api/admin/auth/refresh → { accessToken }
+  POST /api/admin/auth/logout
+  GET /api/admin/auth/me → current admin user
+
+Database: Use existing User entity, add adminRole field (SUPER_ADMIN, ADMIN, MANAGER, VIEWER)
+
+---
+
+### 2. DASHBOARD
+Route: /admin
+Display:
+- KPI Cards: Total Products, Low Stock Items, Orders Today, Revenue Today
+- Recent Activity Feed: New products, stock updates, orders, trending items
+- Charts: Best sellers, revenue trend, top viewed, stock health
+- Quick Actions: Create product, upload images, check inventory
+
+---
+
+### 3. PRODUCT MANAGEMENT (CORE FEATURE)
+Route: /admin/products
+
+A. Product List Page (/admin/products):
+   - Searchable, filterable, sortable data table
+   - Columns: Thumbnail, Name, Category, Price, Stock, Variants, Rating, Actions
+   - Filters: Category, Stock Status, Badge, Rating
+   - Sort: Name, Price, Stock, Created Date, Popularity
+   - Pagination: 20/50/100 per page
+   - Bulk Actions: Delete, Add Badge, Change Category, Export
+
+   Row Actions:
+   - Edit (→ /admin/products/:id/edit)
+   - View (preview on customer site)
+   - Duplicate
+   - Delete
+
+B. Product Create (/admin/products/create):
+   Single comprehensive form with tabs:
+   
+   TAB 1: BASIC INFO
+   - Name (required, 120 chars max)
+   - Slug (auto-generated, editable, unique)
+   - Category (dropdown, required)
+   - Short Description (100 chars max)
+   - Description (rich text editor)
+   - Ingredients (textarea, optional)
+   - Base Price (decimal, required)
+   - Flags: isFeatured, isBestSeller, isLatestArrival (checkboxes)
+   - isActive (toggle, default true)
+   
+   TAB 2: BADGES & CERTIFICATIONS
+   - Badges: Multi-select (Organic, Vegan, Low Waste, New, Sale, Trending)
+   - Certifications: Multi-select dropdown with logos
+   
+   TAB 3: VARIANTS (add variants to this product)
+   - Initially empty (can add after product creation)
+   - "Add Variant" button → Modal form:
+     * Name (e.g., "500ml", "1kg")
+     * Price
+     * Discount Price (optional, auto-calc % if discountPrice > price)
+     * Offer Text
+     * SKU (auto-generate or manual)
+     * Stock Quantity
+     * Low Stock Threshold
+     * Shelf Life (dropdown)
+   
+   TAB 4: IMAGES (upload images)
+   - Drag-and-drop upload zone
+   - Preview grid
+   - Reorder via drag-drop
+   - Set as default (star icon)
+   - Delete (X button)
+   - Alt text per image (inline edit)
+
+   Button: CREATE PRODUCT → POST /api/admin/products → Redirect to edit page
+
+C. Product Edit (/admin/products/:id/edit):
+   Same tabs as Create, but with all fields pre-populated
+   Button: SAVE CHANGES → PATCH /api/admin/products/:id
+   Delete Button: DELETE PRODUCT → confirmation → DELETE /api/admin/products/:id
+
+---
+
+### 4. VARIANT MANAGEMENT (CRITICAL FOR YOUR WORKFLOW)
+Accessed via: /admin/products/:id/edit → Variants tab
+
+Features:
+- Table of existing variants
+- Edit variant inline or via modal
+- Add new variant (modal form)
+- Delete variant
+- Reorder variants (drag-drop)
+- Bulk edit (set discount % for all variants)
+
+Key Fields:
+- Name, Price, Discount Price, Discount %, Offer, SKU, Stock, Low Threshold, Shelf Life
+
+---
+
+### 5. IMAGE MANAGEMENT (YOUR PRIORITY)
+Accessed via: /admin/products/:id/edit → Images tab
+
+Features:
+- Drag-and-drop upload zone (accepts multiple files)
+- Image gallery grid (4-column, thumbnails)
+- Per-image actions:
+  * Preview (click thumbnail)
+  * Set as Default (star icon)
+  * Edit Alt Text (inline edit field)
+  * Delete (X button)
+- Drag-to-reorder (updates displayOrder)
+- Upload progress bar
+- Error handling with retry
+
+API Endpoints:
+  POST /api/admin/products/:id/images → upload files
+  PATCH /api/admin/products/:id/images/:imgId → update alt text
+  PATCH /api/admin/products/:id/images/:imgId/set-default
+  DELETE /api/admin/products/:id/images/:imgId
+
+---
+
+### 6. CATEGORY MANAGEMENT
+Route: /admin/categories
+Features:
+- CRUD for categories
+- Drag-to-reorder for homepage display
+- Product count per category
+
+---
+
+### 7. STOCK & INVENTORY
+Route: /admin/inventory
+Features:
+- Overview dashboard (total SKUs, in-stock, low-stock, out-of-stock)
+- Stock status table with filtering
+- Low stock alerts (highlighted)
+- Quick inline edit for stock levels
+- Set low-stock threshold
+
+---
+
+### 8. ANALYTICS & REPORTS
+Route: /admin/analytics
+Features:
+- Revenue by date (line chart)
+- Orders by date (bar chart)
+- Top selling products (table)
+- Top selling categories (pie chart)
+- Most viewed products
+- Stock turnover analysis
+- Export as CSV
+
+---
+
+### 9. SITE SETTINGS
+Route: /admin/settings
+Sections:
+- General: Site name, logo, support contact
+- Shipping: Free shipping threshold (₹4000), shipping cost (₹500), tax %
+- Notifications: Email alerts for low stock, new orders
+- Display: Products per page, best seller criteria
+- Payment: Gateway configuration
+
+---
+
+### 10. USER MANAGEMENT (ADMIN ACCOUNTS)
+Route: /admin/users
+Features:
+- List all admin users
+- Create new admin account
+- Edit admin (name, email, role, status)
+- Delete admin (with confirmation)
+- Reset password (email link)
+
+---
+
+TECH STACK RECOMMENDATIONS
+---------------------------
+
+Frontend - Admin Web (/apps/admin-web):
+  Framework: Next.js 14 (App Router)
+  UI Library: Tailwind CSS + Shadcn/ui
+  Form Handling: React Hook Form + Zod validation
+  Image Upload: React-Dropzone
+  Rich Text Editor: TipTap or Quill
+  Charts: Recharts
+  Data Tables: TanStack React Table
+  HTTP Client: Axios with interceptors
+  State: Zustand or React Context
+  Icons: Lucide React
+  Notifications: Sonner toast
+
+Backend - Shared with Customer App (/apps/api):
+  Framework: NestJS (existing)
+  New Features:
+    - AdminAuthController, AdminAuthService
+    - AdminProductsController, AdminProductsService
+    - Role-based guards (@Roles decorator)
+    - AdminImageUploadService (MinIO integration)
+  Routes: /api/admin/* (separate from /api/products)
+
+Shared Packages:
+  /packages/admin-types: TypeScript interfaces
+  /packages/admin-api-client: HTTP client for admin endpoints
+  /packages/admin-services: Validation, calculations, business logic
+
+---
+
+IMPLEMENTATION ROADMAP
+-----------------------
+
+**PHASE 1: Admin Web Portal (4 weeks)**
+
+Week 1:
+  - Create /apps/admin-web with Next.js scaffolding
+  - Setup Tailwind + Shadcn/ui component library
+  - Create /packages/admin-types with TypeScript interfaces
+  - Implement admin login page + authentication flow
+  - Create backend endpoints: POST /api/admin/auth/login, POST /api/admin/auth/register
+
+Week 2:
+  - Create /packages/admin-api-client with HTTP client
+  - Build admin dashboard with KPI cards
+  - Create product list page with filtering & pagination
+  - Implement product create/edit form (basic version)
+  - Create backend endpoints: GET /api/admin/products, POST /api/admin/products, PATCH /api/admin/products/:id
+
+Week 3:
+  - Add variant management UI (edit, add, delete, reorder)
+  - Add image upload with drag-and-drop
+  - Implement set-as-default, reorder, delete for images
+  - Create backend endpoints: POST /api/admin/products/:id/images, PATCH /api/admin/products/:id/images/:imgId
+  - Add variant endpoints: POST /api/admin/products/:id/variants, PATCH /api/admin/products/:id/variants/:vid
+
+Week 4:
+  - Add category management page
+  - Add stock/inventory dashboard
+  - Add analytics/reporting dashboard
+  - Add site settings page
+  - Add user management page
+  - Test all CRUD operations
+  - Bug fixes & polish
+
+**PHASE 2: Shared Packages & Backend (Parallel, 1 week)**
+  - Extract admin API client to /packages/admin-api-client
+  - Extract types to /packages/admin-types
+  - Extract validation schemas to /packages/admin-services
+  - Update both web and API to use shared packages
+
+**PHASE 3: Admin Mobile App (Optional, Later - 3 weeks)**
+  - Create /apps/admin-mobile with React Native
+  - Reuse /packages/admin-api-client, /packages/admin-types
+  - Build mobile screens: Dashboard, Product List, Quick Edit, Stock View
+  - Mobile-specific features: Camera upload (single file), simpler forms
+  - Deploy to App Store / Play Store
+
+---
+
+SHARED CODE EXAMPLE
+-------------------
+
+// /packages/admin-api-client/src/product.client.ts
+export class AdminProductClient {
+  constructor(private httpClient: AdminHttpClient) {}
+
+  async getProducts(filters?: ProductFilters): Promise<Product[]> {
+    return this.httpClient.get('/admin/products', { params: filters });
+  }
+
+  async createProduct(data: CreateProductDTO): Promise<Product> {
+    return this.httpClient.post('/admin/products', data);
+  }
+
+  async uploadImages(productId: string, files: File[]): Promise<ProductImage[]> {
+    const formData = new FormData();
+    files.forEach(f => formData.append('files', f));
+    return this.httpClient.post(`/admin/products/${productId}/images`, formData);
+  }
+
+  async updateVariant(productId: string, variantId: string, data: UpdateVariantDTO): Promise<ProductVariant> {
+    return this.httpClient.patch(`/admin/products/${productId}/variants/${variantId}`, data);
+  }
+}
+
+// Used identically in /apps/admin-web and /apps/admin-mobile
+import { AdminProductClient } from '@countrynatural/admin-api-client';
+
+---
+
+API ENDPOINTS SUMMARY (ADMIN)
+-----------------------------
+
+Authentication:
+  POST /api/admin/auth/login
+  POST /api/admin/auth/register
+  POST /api/admin/auth/refresh
+  POST /api/admin/auth/logout
+  GET /api/admin/auth/me
+
+Products:
+  GET /api/admin/products
+  POST /api/admin/products
+  GET /api/admin/products/:id
+  PATCH /api/admin/products/:id
+  DELETE /api/admin/products/:id
+
+Variants:
+  POST /api/admin/products/:id/variants
+  PATCH /api/admin/products/:id/variants/:vid
+  DELETE /api/admin/products/:id/variants/:vid
+
+Images:
+  POST /api/admin/products/:id/images
+  PATCH /api/admin/products/:id/images/:imgId
+  PATCH /api/admin/products/:id/images/:imgId/set-default
+  DELETE /api/admin/products/:id/images/:imgId
+
+Categories:
+  GET /api/admin/categories
+  POST /api/admin/categories
+  PATCH /api/admin/categories/:id
+  DELETE /api/admin/categories/:id
+
+Inventory:
+  GET /api/admin/inventory/overview
+  GET /api/admin/inventory/stock-status
+  PATCH /api/admin/products/:id/variants/:vid/stock
+
+Analytics:
+  GET /api/admin/analytics/revenue
+  GET /api/admin/analytics/orders
+  GET /api/admin/analytics/top-products
+
+Settings:
+  GET /api/admin/settings
+  PATCH /api/admin/settings
+
+Users:
+  GET /api/admin/users
+  POST /api/admin/users
+  PATCH /api/admin/users/:id
+  DELETE /api/admin/users/:id
+
+---
+
+SUMMARY & DECISION POINTS
+-------------------------
+
+✅ Recommendation: Build Web Admin First
+  - Estimated Timeline: 4 weeks for MVP
+  - Start Week 1 with Next.js scaffolding + login
+  - Focus on product, variant, and image management as priority
+  - Keep analytics simple initially (daily reports, not real-time)
+
+✅ Shared Code Strategy
+  - Create /packages/admin-types (shared TypeScript interfaces)
+  - Create /packages/admin-api-client (shared HTTP client)
+  - Create /packages/admin-services (shared validation & business logic)
+  - This prepares foundation for mobile admin app without rewriting code
+
+✅ Image Handling
+  - Multi-file drag-and-drop upload
+  - Batch uploads with progress bar
+  - Reorder via drag-drop
+  - Set as default with visual indicator
+  - Backend: MinIO handles file storage (already configured)
+
+================================================================================
+28. CHANGELOG
+
+2026-01-15 - ADMIN SYSTEM CODE CLEANUP & COMPILATION FIXES
+  ✓ Admin Controller Cleanup (NestJS API - Decorator Removal):
+    - admin-settings.controller.ts: Removed @ApiOperation() and @ApiResponse() decorators from 7 endpoints
+    - admin-users.controller.ts: Removed decorators from 9 endpoints + cleaned imports (ApiOperation, ApiResponse not needed)
+    - cart.controller.ts: Removed decorators from 7 endpoints + cleaned imports
+    - wishlist.controller.ts: Removed decorators from 7 endpoints + cleaned imports
+    - Total: 30 endpoints cleaned, 16+ decorators removed
+    - Benefit: Cleaner code, reduced dependency on Swagger decorators, faster compilation
+  
+  ✓ Admin TypeScript Compilation Errors Fixed (16 total):
+    - audit-log.service.ts: Fixed missing entity import (created temporary AuditLog class definition)
+    - dashboard.service.ts: 
+      * Fixed Order property errors (totalPrice/totalAmount → total property)
+      * Added missing typeorm imports (Not, IsNull)
+      * Fixed User query for createdAt (used QueryBuilder for proper date comparison)
+    - admin-settings.service.ts:
+      * Fixed null value handling in parseValue() calls (provided default types)
+      * Fixed SiteSetting property references (removed non-existent dataType property)
+      * Fixed repository.create() type issues (switched to direct object instantiation)
+    - Compilation Status: All 16 errors resolved
+  
+  ✓ Entity Export Barrel File Created:
+    - /apps/api/src/entities/index.ts: Created comprehensive barrel export for all 26 entities
+    - Fixed ReturnEntity export name (was incorrectly named 'Return')
+    - Allows dashboard.module.ts to import from '../entities/index'
+    - Provides single entry point for entity imports across codebase
+  
+  ✓ Dependency Injection Fixes:
+    - admin-auth.module.ts: Added exports: [AdminAuthService] to AdminAuthModule
+    - Allows other modules (AuditLogModule, etc.) to access AdminAuthService
+    - Fixed UnknownDependenciesException in AuditLogController
+  
+  ✓ Admin Portal Current Status (After Cleanup):
+    - API: All admin controllers have clean, maintainable code
+    - Services: Dashboard service fixed for proper revenue calculations
+    - Settings: Admin settings service fully functional without TypeORM type conflicts
+    - Authentication: AdminAuthModule properly exports service for cross-module usage
+    - Compilation: Zero errors, watch mode running smoothly
+
+2026-01-11 - VERSION 0.5.0: AUTHENTICATION, ADMIN PORTAL, CART/WISHLIST SYSTEMS COMPLETE
+  ✓ Authentication System Complete (85%):
+    - Mobile: 3 screens created (LoginScreen.tsx, RegisterScreen.tsx, OTPScreen.tsx)
+    - Backend: 5 API endpoints (/auth/register, /auth/verify-register, /auth/login, /auth/send-otp, /auth/verify-otp)
+    - Features: Email+password login, Phone+OTP login (6-digit, 10-min expiry), JWT tokens (30-day), bcrypt hashing (10 rounds)
+    - Storage: AsyncStorage persistence for token + user data
+    - Admin: Separate authentication system (signup/login endpoints, protected routes)
+    - Entities: User entity with phone field (unique constraint)
+    - Mobile Navigation: Login → Register → OTP → Home flow complete
+  
+  ✓ Cart & Wishlist System with Guest Support (Cart 98%, Wishlist 85%):
+    - Database Migrations: 2 new migrations executed (UpdateWishlistAndCartVariants, AddGuestWishlistAndRemoveCurrency)
+    - Cart API: 5 endpoints (GET /cart, POST/PATCH/DELETE /cart/items, DELETE /cart)
+    - Wishlist API: 6 endpoints (GET/POST/DELETE /wishlist, GET /wishlist/check/:productId/:variantId, DELETE /wishlist)
+    - Guest Support: sessionId-based identification with 7-day TTL (expiresAt field), auto-cleanup
+    - User Support: userId-based (permanent storage), merge guest data on login
+    - Schema Changes: Wishlists table (sessionId, expiresAt added; userId nullable), Carts table (currency removed - always INR)
+    - Indexes: 4 new indexes on wishlists (session, session+product+variant, user+product+variant unique constraints)
+    - Variant Support: variantId UUID references (replaces old VARCHAR variant field), proper foreign keys
+    - Services: WishlistService (8 methods), CartService updated for variantId, price calculation with multipliers
+    - Controllers: WishlistController (6 endpoints), CartController updated with headers (x-session-id, x-user-id)
+    - Modules: WishlistModule created and registered in AppModule
+  
+  ✓ Admin Portal System (85%):
+    - Modules Created: 17 admin modules (reviews, payments, refunds, returns, inventory, order-status-history, analytics, coupons, etc.)
+    - Admin Web App: Next.js 14 app at /apps/admin-web with protected routes
+    - Product Management: Full CRUD with variant management, image upload integration, SKU auto-generation
+    - Dashboard: KPI cards (revenue, orders, products, users), analytics reports
+    - Image Management: Drag-drop upload, variant-specific images, MinIO integration
+    - Authentication: Separate admin auth system (AdminAuthController, AdminAuthService) with JWT
+    - Shared Packages: @countrynatural/admin-types, @countrynatural/admin-api-client for code reuse
+    - Features: Product create/edit, variant management, stock tracking, discount management, order management
+    - UI: Sidebar navigation, dashboard widgets, product tables with category grouping, form validation
+  
+  ✓ Mobile App Enhancements (Phase 3: 75%):
+    - Screens Added: 4 new screens (CategoryProductsScreen, LoginScreen, RegisterScreen, OTPScreen)
+    - Total Screens: 8 (Home, Products, ProductDetail, CategoryProducts, Login, Register, OTP, About)
+    - Category Navigation: Category grid → CategoryProductsScreen → ProductDetailScreen flow complete
+    - Recommended Products: "You May Also Like" section on product detail with same-category products
+    - Authentication Integration: Login/Register/OTP screens with AuthContext, AsyncStorage persistence
+    - API Functions: getProductsByCategory(), getRecommendedProducts(), autocomplete, all auth endpoints
+    - Navigation: React Navigation stack with proper parameter passing (categorySlug, categoryName)
+    - Performance: Expo Image disk caching, haptic feedback, loading states
+  
+  ✓ Image System Enhancements (95%):
+    - Variant-Based Structure: Images organized by product/{id}/{weight}/{type}/ in MinIO
+    - Image Types: hero-card (1 max), info-card (1 max), other-images (unlimited)
+    - Schema Changes: ProductImage table (imageType, variantId, variantWeight, productName added; displayOrder/isDefault removed)
+    - Auto-Replace Logic: Uploading new hero-card/info-card auto-deletes old one
+    - Sync Service: ProductImageSyncService for MinIO ↔ Database consistency checks
+    - Admin Integration: Upload endpoints, sync endpoints (/admin/products/:id/images/sync)
+    - Display Strategy: Insertion order (createdAt) determines display sequence
+    - MinIO Bucket: Standardized to 'cnf-products' (legacy 'products' bucket cleaned up)
+  
+  ✓ Database Migrations (10 Total Executed):
+    - 1733513400000-DropProductAttributesTable.ts
+    - 1733584800000-RemoveDuplicateProducts.ts
+    - 1734748800000-DropCategoryImagesAddAltText.ts
+    - 1734783600000-AddCategoryFieldsToTables.ts
+    - 1734787200000-UpdateProductImagesForVariantStructure.ts
+    - 1734789000001-RemoveOfferFromProductVariants.ts
+    - 1734793200002-RemoveDisplayOrderFromProductImages.ts
+    - 1734793300003-RemoveIsDefaultFromProductImages.ts
+    - 1736630000000-UpdateWishlistAndCartVariants.ts
+    - 1736630000001-AddGuestWishlistAndRemoveCurrency.ts
+  
+  ✓ API Endpoints Summary:
+    - Mobile Auth: 5 endpoints (authentication)
+    - Cart: 5 endpoints (guest + user support)
+    - Wishlist: 6 endpoints (guest + user support)
+    - Admin: 50+ endpoints across 17 modules (products, variants, images, reviews, coupons, payments, etc.)
+    - Products: Enhanced with category filtering, exclude parameter, autocomplete
+  
+  ✓ Documentation Created:
+    - AUTHENTICATION_SYSTEM_COMPLETE.md (complete mobile auth guide)
+    - BACKEND_CART_WISHLIST_IMPLEMENTATION.md (comprehensive cart/wishlist reference)
+    - MIGRATION_AND_ERROR_RESOLUTION_COMPLETE.md (migration execution details)
+    - ADMIN_PORTAL_COMPLETE.md (admin system overview)
+    - CATEGORY_PRODUCT_FLOW_IMPLEMENTATION.md (category navigation flow)
+    - PHASE_3_MINIO_DATABASE_SYNC_COMPLETE.md (image sync service)
+    - Plus 20+ additional detailed implementation guides
+
+2025-12-20 - DATABASE SCHEMA ENHANCEMENT: Product Denormalization for Clarity
+  ✓ Added `productName` column to all product-related tables:
+    - product_variants: Added `productName` (VARCHAR) to easily identify which product a variant belongs to without joining
+    - product_images: Added `productName` (VARCHAR) for clear image ownership tracking
+    - product_views: Added `productName` (VARCHAR) + `variantWeight` (VARCHAR) for tracking visibility
+    - stock_notifications: Added `productName` + `variantWeight` for clear notification context
+    - cart_items: Added `productName` + `variantId` + `variantWeight` for detailed cart information
+    - order_items: Already had `productName`; added `variantId` + `variantWeight` for complete order tracking
+  
+  ✓ Renamed `product_variants.name` → `product_variants.weight`:
+    - This column contains size/weight info (e.g., "500ML", "1000G"), not a name
+    - Renaming improves database clarity and reduces confusion
+    - When displayed to users, this becomes the variant option (e.g., "500ML" variant of Coconut Oil)
+  
+  ✓ Purpose: Reduced join operations, improved query performance, clearer database structure
+    - Team members can now understand table data at a glance without analyzing relationships
+    - Queries faster (no joins needed to get product context)
+    - More maintainable codebase
+  
+  ✓ Impact on Admin/API:
+    - API responses will include both `productId` and `productName` for better UX
+    - Admin forms will display product names alongside IDs
+    - Cart and order displays will show complete product+variant information without additional lookups
+    - Image management will show product context for each image
